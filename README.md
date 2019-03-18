@@ -1,0 +1,2 @@
+# gutenberg-allegro
+I present here a microservice-oriented application that is a Docker version of the previous project &lt;a href="https://github.com/dubersfeld/gutenberg-rhapsody">gutenberg-rhapsody&lt;/a>. This project uses an ElasticSearch Docker image instead of the local ElasticSearch service that should be stopped to avoid any port conflict. In addition I present an emulation of an ElasticSearch cluster based on Docker containers.
