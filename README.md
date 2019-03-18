@@ -177,7 +177,7 @@ Go to the project cluster-monitor and run the command:
 mvn spring-boot:run
 ```
 
-Then hit http://localhost:9091 in a browser and click connect button. The response should look like this screen shot:
+Then hit localhost:9091 in a browser and click connect button. The response should look like this screen shot:
 
 ![alt text](images/display1.png "Initial display")
 
