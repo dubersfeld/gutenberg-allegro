@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/header::header(title='authorizePayment')">
+</head>
+
+<body>
+
+	<h2>Your payment methods</h2>
+	
+	<br /><br />
+	<div th:each="methIndex : ${methIndexes}" th:with="toto=${methIndex.meth.cardNumber}">
+
+	<br /><br />
+	
+	<form action="#" th:action="@{/selectPaymentMethod}" th:object="${indexForm}" method="post">
+    	<p><span th:text="'Credit Card Number: '"></span><span th:text="${methIndex.meth.cardNumber}"></span></p>
+        <p><span th:text="'Name: '"></span><span th:text="${methIndex.meth.name}"></span></p>
+        <p><input type="hidden" th:name="index" th:id="index" th:value="${methIndex.index}" /></p>
+      
+        <p>
+        <span th:text="'Make primary: '"></span>
+        <input type="radio" th:field="*{primary}" th:value="'false'" /><span th:text="'no'"></span>
+        <input type="radio" th:field="*{primary}" th:value="'true'" /><span th:text="'yes'"></span>
+        </p>
+        <p><input type="submit" th:value="'choose'" /></p>
+	</form>
+
+	</div>
+		
+</body>
+</html>

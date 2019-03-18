@@ -1,0 +1,33 @@
+server:
+  port: 5555
+    
+zuul:
+  sensitive-headers: 
+  routes:  
+    book-service: /books/**   
+    review-service: /reviews/**      
+    order-service: /orders/**   
+    user-service: /users/**   
+    
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+ribbon:
+  ConnectTimeout:  10000
+  ReadTimeout:  10000
+    
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka/
+    
+
+    

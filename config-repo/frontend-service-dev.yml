@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /gutenberg
+
+  
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka/
+
+
+# base server URLs 
+baseBooksUrl: http://zuul-service:5555/books
+baseReviewsUrl: http://zuul-service:5555/reviews
+baseOrdersUrl: http://zuul-service:5555/orders
+baseUsersUrl: http://zuul-service:5555/users
+
+
+
+# base server URLs 
+#baseBooksUrl: http://book-service:8081
+#baseReviewsUrl: http://review-service:8082
+#baseOrdersUrl: http://order-service:8083
+#baseUsersUrl: http://user-service:8084
+
+
+
+
+

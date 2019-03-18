@@ -1,0 +1,141 @@
+version: '3.4'
+
+services:
+
+  elastic-books:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    container_name: elastic-books
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - gutenberg1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - gutenbergnet
+
+  config-server:
+    image: gutenberg/config-server
+    # edit to match your own filesystem
+    volumes:
+      - type: bind
+        source: /home/dominique/gutenberg-allegro/config-repo
+        target: /tmp/config-repo
+    ports:
+      - "8888:8888"
+    environment:
+      - EUREKASERVER_URI=http://eurekaserver:8761/eureka/
+      - EUREKASERVER_HOST=eurekaserver
+      - EUREKASERVER_PORT=8761
+    networks:
+      - gutenbergnet
+
+  eurekaserver:
+    image: gutenberg/eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - gutenbergnet
+
+  book-service:
+    image: gutenberg/book-server
+    ports:
+      - 8081:8081
+    environment:
+      - GUTENBERG_CONFIG_URI=http://config-server:8888
+      - CONFIGSERVER_HOST=config-server
+      - CONFIGSERVER_PORT=8888
+      - ELASTICSERVER_HOST=elastic-books
+      - ELASTICSERVER_PORT=9200
+    networks:
+      - gutenbergnet
+
+  review-service:
+    image: gutenberg/review-server
+    ports:
+      - 8082:8082
+    environment:
+      - GUTENBERG_CONFIG_URI=http://config-server:8888
+      - CONFIGSERVER_HOST=config-server
+      - CONFIGSERVER_PORT=8888
+      - RABBITMQSERVER_HOST=rabbitmq-server
+      - RABBITMQSERVER_PORT=5672
+      - ELASTICSERVER_HOST=elastic-books
+      - ELASTICSERVER_PORT=9200
+    networks:
+      - gutenbergnet
+
+  user-service:
+    image: gutenberg/user-server
+    ports:
+      - 8084:8084
+    environment:
+      - GUTENBERG_CONFIG_URI=http://config-server:8888
+      - CONFIGSERVER_HOST=config-server
+      - CONFIGSERVER_PORT=8888
+      - RABBITMQSERVER_HOST=rabbitmq-server
+      - RABBITMQSERVER_PORT=5672
+      - ELASTICSERVER_HOST=elastic-books
+      - ELASTICSERVER_PORT=9200
+    networks:
+      - gutenbergnet
+
+  order-service:
+    image: gutenberg/order-server
+    ports:
+      - 8083:8083
+    environment:
+      - GUTENBERG_CONFIG_URI=http://config-server:8888
+      - CONFIGSERVER_HOST=config-server
+      - CONFIGSERVER_PORT=8888
+      - RABBITMQSERVER_HOST=rabbitmq-server
+      - RABBITMQSERVER_PORT=5672
+      - ELASTICSERVER_HOST=elastic-books
+      - ELASTICSERVER_PORT=9200
+    networks:
+      - gutenbergnet
+
+  zuul-service:
+    image: gutenberg/zuul-server
+    ports:
+      - 5555:5555
+    environment:
+      - GUTENBERG_CONFIG_URI=http://config-server:8888
+      - CONFIGSERVER_HOST=config-server
+      - CONFIGSERVER_PORT=8888
+    networks:
+      - gutenbergnet
+
+  frontend-server:
+    image: gutenberg/frontend-server
+    ports:
+      - 8080:8080
+    environment:
+      - GUTENBERG_CONFIG_URI=http://config-server:8888
+      - CONFIGSERVER_HOST=config-server
+      - CONFIGSERVER_PORT=8888
+      - BOOKSERVER_HOST=book-service
+      - BOOKSERVER_PORT=8081
+      - USERSERVER_HOST=user-service
+      - USERSERVER_PORT=8084
+      - REVIEWSERVER_HOST=review-service
+      - REVIEWSERVER_PORT=8082
+      - ORDERSERVER_HOST=order-service
+      - ORDERSERVER_PORT=8083
+    networks:
+      - gutenbergnet
+
+
+volumes:
+  gutenberg1:
+    driver: local
+
+
+networks:
+  gutenbergnet:

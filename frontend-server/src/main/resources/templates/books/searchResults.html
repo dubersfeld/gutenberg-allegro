@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header::header(title='allBooksInCategory')">
+</head>
+    
+<body>
+
+	<div th:replace="fragments/main::display"></div>
+    
+	<h2 th:text="'All search results'"></h2>
+        
+    <table>
+        <tr th:each="book : ${books}">
+          <td>
+        	<a th:href="@{'/books/' + ${book.slug}}" th:text="${book.title}"></a>
+       	  </td>
+        </tr>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='updateAddress')">
+</head>  
+<body>
+        
+    <div th:replace="fragments/main::display"></div>
+    
+    <h2 th:text="'Add a new address'"></h2>
+        
+        <form action="#" th:action="@{/addAddress}" th:object="${address}" method="post">
+    	<p><span th:text="'street: '"></span><input type="text" th:field="*{street}" th:required="required" /><span th:if="${#fields.hasErrors('street')}" th:errors="*{street}" th:class="errors"></span></p>
+        <p><span th:text="'city: '"></span><input type="text" th:field="*{city}" th:required="required" /><span th:if="${#fields.hasErrors('city')}" th:errors="*{city}" th:class="errors"></span></p>
+        <p><span th:text="'zip: '"></span><input type="text" th:field="*{zip}" th:required="required" /><span th:if="${#fields.hasErrors('zip')}" th:errors="*{zip}" th:class="errors"></span></p>
+        <p><span th:text="'state: '"></span><input type="text" th:field="*{state}" /><span th:if="${#fields.hasErrors('state')}" th:errors="*{state}" th:class="errors"></span></p>
+        <p><span th:text="'country: '"></span><input type="text" th:field="*{country}" th:required="required" /><span th:if="${#fields.hasErrors('country')}" th:errors="*{country}" th:class="errors"></span></p>
+      
+        <p><input type="submit" th:value="'Valid'" /> <input type="reset" th:value="'Reset'" /></p>
+    	</form>
+
+    </body>
+</html>

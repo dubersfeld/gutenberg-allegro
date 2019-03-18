@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='editCart')">
+</head>    
+<body>
+
+	<div th:replace="fragments/main::display"></div>
+    
+	  <h2 th:text="'Edit your cart'"></h2>
+    
+      <div th:if="${not #lists.isEmpty(items)}">
+        
+      <table class="cartTable">
+        <thead>
+        <tr class="cartTable">
+        	<th th:text="'Title'"></th>   
+            <th th:text="'Quantity'"></th>
+            <th th:text="'Price'"></th>
+          
+        </tr>
+        </thead> 
+   		<!--  Here we use class DisplayItemPrice -->
+   		<tr class="cartTable" th:each="item : ${items}">
+        	<td th:text="${item.title}">id</td>
+            <td th:text="${item.quantity}">first name</td>
+            <td th:text="${item.price}">first name</td>
+        </tr>
+        <tr class="cartTable">
+        	<td th:text="'Subtotal'"></td>
+        	<td></td>
+        	<td th:text="${subtotal}"></td>
+        </tr>
+	  </table>
+	    
+	    <!--  Here we use class DisplayItem -->
+	  <br /><br />
+	  <form action="#" th:action="@{/editCart}" th:object="${orderEditForm}" method="post">
+		<div th:each="item, stat : ${orderEditForm.items}">
+          <input type="hidden" th:field="*{items[__${stat.index}__].bookId}" />
+          <input type="hidden" th:field="*{items[__${stat.index}__].title}" />
+          <span th:text="${item.title} + ': '"></span><span th:text="'quantity: '"></span><input type="text" th:field="*{items[__${stat.index}__].quantity}" />
+        </div>   
+        
+        <p><input type="submit" th:value="'Valid'" /></p>
+	  </form>
+	  
+	</div>
+	
+    <div th:if="${#lists.isEmpty(items)}">
+	  <h2 th:text="'Your cart is empty'"></h2>
+	</div>
+	
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='allBooksinCategory')">
+</head>    
+<body>
+
+  <div th:replace="fragments/main::display">
+  </div>
+  
+  
+  <h3 th:text="'Add your review of this book: ' + ${book.title}"></h3>
+
+  
+
+  <form action="#" th:action="@{/createReview}" th:object="${review}" method="post">
+    	<p><span th:text="'Text: '"></span><input type="text" th:field="*{text}" maxlength="100"/></p>
+        <p><span th:text="'Book rating from 0 to 5: '"></span><input type="text" th:field="*{rating}" maxlength="1"/></p>
+     
+        <p><input type="hidden" th:field="*{userId}" th:readonly="readonly"/></p>
+        <p><input type="hidden" th:field="*{bookId}" th:readonly="readonly"/></p>
+     
+        <p><input type="submit" th:value="'Post Review'" /></p>
+  </form>
+
+	
+	
+</body>
+	
+</html>

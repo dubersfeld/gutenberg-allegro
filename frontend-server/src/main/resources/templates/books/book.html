@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='allBooksinCategory')">
+</head>    
+<body>
+
+	<div th:replace="fragments/main::display"></div>
+    
+	<h2 th:text="'All books details'"></h2>
+        
+    <p th:text="${book.title}"></p>       
+    <p th:text="${book.description}" class="description"></p>
+           
+    <p>
+      <span th:text="'authors: '"></span>
+      <span th:each="author : ${book.authors}" th:text="${author}"></span>
+    </p>
+        
+	<p><span th:text="'publisher: '"></span><span th:text="${book.publisher}">publisher</span></p>
+
+	<p><span th:text="'price: $'"></span><span th:text="${#numbers.formatDecimal(price, 0, 'COMMA', 2, 'POINT')}">price</span></p>
+
+	<p th:if="${rating != null}" th:text="'Average rating: ' + ${#numbers.formatDecimal(rating, 0, 'COMMA', 2, 'POINT')}"></p>
+		
+	<form action="#" th:action="@{/addToCart}" th:object="${book}" method="post">
+	  <p><input type="hidden" th:field="*{slug}" /></p>   
+      <p><input type="submit" th:value="'addToCart'" /></p>
+	</form>		
+		
+	<div th:if="${not #lists.isEmpty(reviews)}">
+	  <h2 th:text="'All reviews'"></h2>
+		  	
+	  <a th:text="'Sort by rating'" th:href="@{/sortBy?field=rating}"></a> |
+	  <a th:text="'Sort by helpfulVotes'" th:href="@{/sortBy?field=helpfulVotes}"></a>
+				
+	  <div th:each="review : ${reviews}">
+	    <p th:text="${review.review.text}" class="description"></p>
+	    <span th:text="'Rating: ' + ${review.review.rating}"></span><br />
+	    <span th:text="'HelpfulVotes: ' + ${review.review.helpfulVotes}"></span><br />
+	    <span th:text="'Author: ' + ${review.author}"></span>
+		
+	    <div th:if="not ${review.votedByUser}"> 
+	      <p th:text="'Was this review helpful? Vote for it.'"></p> 
+		  <form action="#" th:action="@{/voteHelpful}" th:object="${voteForm}" method="post">
+     	    <p><input type="hidden" th:name="reviewId" th:id="reviewId" th:value="${review.review.id}"/></p>
+     	    <input type="radio" th:field="*{helpful}" th:value="'false'" /><span th:text="'no'"></span>
+            <input type="radio" th:field="*{helpful}" th:value="'true'" /><span th:text="'yes'"></span>
+     	    <p><input type="submit" th:value="'vote'" /></p>
+		  </form>
+	    </div>
+	  </div>
+    </div>
+		
+	<div th:if="${#lists.isEmpty(reviews)}">
+		<h2 th:text="'No reviews found'"></h2>
+	</div>
+
+</body>
+</html>

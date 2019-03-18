@@ -1,0 +1,27 @@
+server:
+  port: 9091
+  servlet:
+    context-path: 
+    
+        
+websocketUrl: "ws://localhost:9091/gutenberg-websocket"
+
+# edit to match your own filesystem
+clientUrl: "/home/dominique/gutenberg-allegro/cluster"
+
+startServerUrl: "http://localhost:9091/startNode"
+stopServerUrl: "http://localhost:9091/stopNode"
+excludeServerUrl: "http://localhost:9091/excludeNode"
+includeServerUrl: "http://localhost:9091/includeNode"
+  
+
+# edit to match your own sudo password
+password: mysudopassword
+
+ips: "172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6"
+
+containers: 
+  "elasticsearch1,elasticsearch2,elasticsearch3,elasticsearch4,elasticsearch5"
+
+volumes:
+  "gutenberg-es-data1,gutenberg-es-data2,gutenberg-es-data3,gutenberg-es-data4,gutenberg-es-data5" 

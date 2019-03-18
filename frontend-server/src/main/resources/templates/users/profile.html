@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='updateAddress')">
+</head>  
+<body>
+        
+    <div th:replace="fragments/main::display"></div>
+    
+    <h2 th:text="'Your profile'"></h2>
+        
+    <div th:if="${not #lists.isEmpty(addresses)}">    
+    <h2 th:text="'Your addressses'"></h2>  
+        
+    <div th:each="address : ${addresses}">
+	  <form action="#" th:action="@{/deleteAddress}" th:object="${address}" method="post">
+      <span th:text="'Street: ' + ${address.street}"></span><input type="hidden" th:id="street" th:name="street" th:value="${address.street}" /><br/>
+      <span th:text="'City: ' + ${address.city}"></span><input type="hidden" th:id="city" th:name="city" th:value="${address.city}" /><br/>
+      <span th:text="'Zip: ' + ${address.zip}"></span><input type="hidden" th:id="zip" th:name="zip" th:value="${address.zip}" /><br/>
+      <span th:text="'State: ' + ${address.state}"></span><input type="hidden" th:id="state" th:name="state" th:value="${address.state}" /><br/>
+      <span th:text="'Country: ' + ${address.country}"></span><input type="hidden" th:id="country" th:name="country" th:value="${address.country}" /><br/>
+      <p><input type="submit" th:value="'Delete this address'" /></p>
+      </form>
+      <br/> 
+    </div>
+    </div>
+    
+    <div th:if="${#lists.isEmpty(addresses)}">
+    <h2 th:text="'No addresss found'"></h2>   
+    </div> 
+     
+    <form action="#" th:action="@{/addAddress}" method="get">
+      <p><input type="submit" th:value="'Add a new address'" /></p>
+    </form>
+         
+    <br /><br />       
+    <div th:if="${not #lists.isEmpty(payMeths)}">    
+    <h2 th:text="'Your payment methods'"></h2>  
+    
+     <div th:each="payMeth : ${payMeths}">
+	  <form action="#" th:action="@{/deletePaymentMethod}" th:object="${payMeth}" method="post">
+      <span th:text="'Card Number: ' + ${payMeth.cardNumber}"></span><input type="hidden" th:id="cardNumber" th:name="cardNumber" th:value="${payMeth.cardNumber}" /><br/>
+      <span th:text="'Name on Card: ' + ${payMeth.name}"></span><input type="hidden" th:id="name" th:name="name" th:value="${payMeth.name}" /><br/>
+      <p><input type="submit" th:value="'Delete this payment method'" /></p>
+      </form>
+      <br/> 
+    </div>
+    </div>
+    
+    <div th:if="${#lists.isEmpty(payMeths)}">    
+    <h2 th:text="'No payment method found'"></h2> 
+    </div> 
+    
+    
+    <!--p><a th:href="@{/addPaymentMethod}" th:text="'Add a new payment method'"></a></p-->
+    
+    <form action="#" th:action="@{/addPaymentMethod}" method="get">
+      <p><input type="submit" th:value="'Add a new payment method'" /></p>
+    </form>
+    
+    
+</body>
+</html>

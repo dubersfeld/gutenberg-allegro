@@ -1,0 +1,139 @@
+version: '3.4'
+
+services:
+
+  elasticsearch1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    container_name: elasticsearch1
+    environment:
+      - cluster.name=gutenberg-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.minimum_master_nodes=3
+      - discovery.zen.ping.unicast.hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    #ports:
+    #  - 9200:9200
+    networks:
+      esnet:
+        ipv4_address: 172.19.0.2
+
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    container_name: elasticsearch2
+    environment:
+      - cluster.name=gutenberg-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.minimum_master_nodes=3
+      - discovery.zen.ping.unicast.hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata2:/usr/share/elasticsearch/data
+    #ports:
+    #  - 9200:9200
+    networks:
+      esnet:
+        ipv4_address: 172.19.0.3
+
+  elasticsearch3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    container_name: elasticsearch3
+    environment:
+      - cluster.name=gutenberg-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.minimum_master_nodes=3
+      - discovery.zen.ping.unicast.hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata3:/usr/share/elasticsearch/data
+    #ports:
+    #  - 9200:9200
+    networks:
+      esnet:
+        ipv4_address: 172.19.0.4 
+
+
+  elasticsearch4:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    container_name: elasticsearch4
+    environment:
+      - cluster.name=gutenberg-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.minimum_master_nodes=3
+      - discovery.zen.ping.unicast.hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata4:/usr/share/elasticsearch/data
+    #ports:
+    #  - 9200:9200
+    networks:
+      esnet:
+        ipv4_address: 172.19.0.5 
+
+  elasticsearch5:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    container_name: elasticsearch5
+    environment:
+      - cluster.name=gutenberg-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.minimum_master_nodes=3
+      - discovery.zen.ping.unicast.hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata5:/usr/share/elasticsearch/data
+    #ports:
+    #  - 9200:9200
+    networks:
+      esnet:
+        ipv4_address: 172.19.0.6 
+
+
+volumes:
+  esdata1:
+    external:
+      name: gutenberg-es-data1
+  esdata2:
+    external:
+      name: gutenberg-es-data2
+  esdata3:
+    external:
+      name: gutenberg-es-data3
+  esdata4:
+    external:
+      name: gutenberg-es-data4
+  esdata5:
+    external:
+      name: gutenberg-es-data5
+
+networks:
+  esnet:
+    external:
+      name: gutenberg
+
+    
+                
+            
+
+
+

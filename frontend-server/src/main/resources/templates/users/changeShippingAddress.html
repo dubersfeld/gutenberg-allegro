@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/header::header(title='authorizePayment')">
+</head>
+
+
+<body>
+
+	<h2 th:text="'Your addresses'"></h2>
+	
+	<br /><br />
+	<div th:each="addIndex : ${addIndexes}">
+
+	<br /><br />
+	
+	<form action="#" th:action="@{/selectShippingAddress}" th:object="${indexForm}" method="post">
+    	<p><span th:text="'Street: '"></span><span th:text="${addIndex.selectable.street}"></span></p>
+        <p><span th:text="'City: '"></span><span th:text="${addIndex.selectable.city}"></span></p>
+       	<p><span th:text="'Zip: '"></span><span th:text="${addIndex.selectable.zip}"></span></p>
+       	<p><span th:text="'State: '"></span><span th:text="${addIndex.selectable.state}"></span></p>
+       	<p><span th:text="'Country: '"></span><span th:text="${addIndex.selectable.country}"></span></p>
+       
+        <p><input type="hidden" th:name="index" th:id="index" th:value="${addIndex.index}" /></p>
+      
+        <p>
+        <span th:text="'Make primary: '"></span>
+        <input type="radio" th:field="*{primary}" th:value="'false'" /><span th:text="'no'"></span>
+        <input type="radio" th:field="*{primary}" th:value="'true'" /><span th:text="'yes'"></span>
+        </p>
+      
+        <p><input type="submit" th:value="'choose'" /></p>
+	</form>
+		
+	</div>
+	
+
+</body>
+
+</html>

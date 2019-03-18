@@ -1,0 +1,25 @@
+#server:
+#  port: 8083
+#  servlet:
+#    context-path:
+
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://eurekaserver:8761/eureka/
+     
+     
+# base server URLs
+#baseBooksUrl: http://book-service:8081 
+
+#elasticsearch-host: "localhost"
+#elasticsearch-port-one: 9200
+#elasticsearch-port-two: 9201
+#elasticsearch-scheme: "http"
+    
+
+  

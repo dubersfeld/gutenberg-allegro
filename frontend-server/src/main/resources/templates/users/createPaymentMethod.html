@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='updateAddress')">
+</head>  
+<body>
+        
+    <div th:replace="fragments/main::display"></div>
+    
+    <h2 th:text="'Add a new payment method'"></h2>
+        
+        <form action="#" th:action="@{/addPaymentMethod}" th:object="${payMeth}" method="post">
+    	<p><span th:text="'Card number: '"></span><input type="text" th:field="*{cardNumber}" /><span th:if="${#fields.hasErrors('cardNumber')}" th:errors="*{cardNumber}" th:class="errors"></span></p>
+        <p><span th:text="'Name on card: '"></span><input type="text" th:field="*{name}" /><span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:class="errors"></span></p>  
+        <p><input type="submit" th:value="#{form.valid}" /> <input type="reset" th:value="#{form.reset}" /></p>
+    	</form>
+
+    </body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Dashboard</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" />   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+	<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+  
+    <script type="text/javascript" th:inline="javascript">
+    
+	var stompClient = null;
+	var startServerUrl = "" + /*[[${startServerUrl}]]*/;
+	var stopServerUrl = "" + /*[[${stopServerUrl}]]*/;
+	var excludeServerUrl = "" + /*[[${excludeServerUrl}]]*/;
+	var includeServerUrl = "" + /*[[${includeServerUrl}]]*/;
+    
+	function clear() {
+		$("#members").html("");
+ 	}    
+
+	function exclude(ip) {
+		return function() {
+			var message = {"ip" : ip};
+			$.ajax({
+				type: "POST",
+				contentType: "application/json",
+				url: excludeServerUrl,
+				data: JSON.stringify(message),
+				dataType: "text",// expected from server
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(xhr, ajaxOptions, thrownError){
+            		console.log(xhr.status);
+        		}
+			});
+		
+			return false;
+		}; 
+	} 
+
+	function include(ip) {
+		return function() {
+			console.log("include " + ip)
+			var message = {"ip" : ip};
+			$.ajax({
+				type: "POST",
+				contentType: "application/json",
+				url: includeServerUrl,
+				data: JSON.stringify(message),
+				dataType: "text",// expected from server
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(xhr, ajaxOptions, thrownError){
+            		console.log(xhr.status);
+        		}
+			});
+		
+			return false;
+		}; 
+	} 
+
+	function start(ip) {
+		return function() {
+			console.log("start " + ip)
+			var message = {"ip" : ip};
+			$.ajax({
+				type: "POST",
+				contentType: "application/json",
+				url: startServerUrl,
+				data: JSON.stringify(message),
+				dataType: "text",// expected from server
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(xhr, ajaxOptions, thrownError){
+            		console.log(xhr.status);
+        		}
+			});
+		
+			return false;
+		}; 
+	} 
+
+	function stop(ip) {
+		return function() {
+			var message = {"ip" : ip};
+			$.ajax({
+				type: "POST",
+				contentType: "application/json",		
+				url: stopServerUrl,
+				data: JSON.stringify(message),
+				dataType: "text",// expected from server
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(xhr, ajaxOptions, thrownError){
+                	console.log(xhr.status);
+            	}
+			});
+		
+			return false;
+		}; 
+	}	 
+
+	function setConnected(connected) {
+    	$("#connect").prop("disabled", connected);
+    	$("#disconnect").prop("disabled", !connected);
+    	if (connected) {
+        	$("#conversation").show();
+   	 	}	
+    	else {
+        	$("#conversation").hide();
+    	}
+    	$("#members").html("");
+	}
+
+	function connect() {
+    	var socket = new SockJS('/gutenberg-websocket');
+    	stompClient = Stomp.over(socket);
+    	stompClient.connect({}, function (frame) {
+        	setConnected(true);
+        	console.log('Connected: ' + frame);
+        	stompClient.subscribe('/topic/cluster', function (cluster) { 	
+        		showCluster(JSON.parse(cluster.body));
+        	});
+    	});
+	}
+
+	function disconnect() {
+    	if (stompClient !== null) {
+        	stompClient.disconnect();
+    	}
+    	setConnected(false);
+    	console.log("Disconnected");
+	}
+
+	function showCluster(message) {
+		// first clear display
+		$("#members").html("");
+		$("#cluster").html("");
+		$("#nodes").html("");
+		$("#bookShards").html("");
+		$("#compressed_size_in_bytes").html("");
+		$("#master_node").html("");
+	
+		var nodes = message["nodes"];
+		var exclusions = message["exclusions"];
+
+		for (var i = 0; i <  message["hosts"].length; i++) {
+			var host = message["hosts"][i];
+			var node = message["nodes"][i];
+			var insert = 'insert' + i;
+			var newRow = $("<tr></tr>");
+			newRow.append("<td>" + host + "</td>");
+			newRow.append("<td>" + ((node["name"] != null) ? node["name"] : "down") + "</td>");
+			newRow.append("<td>" + node["master"] + "</td>");
+			newRow.append("<td>" + exclusions[host] + "</td>");
+			newRow.append("<td id=" + insert + ">");
+			$("#nodes").append($(newRow)); 
+		}
+	
+	var bookShards = message["shards"]["gutenberg-books"];
+	for (var i = 0; i < bookShards.length; i++) {
+		var bookShard = bookShards[i];
+		var newRow = $("<tr></tr>");
+		newRow.append("<td>" + bookShard["index"] + "</td>");
+		newRow.append("<td>" + bookShard["shard"] + "</td>");
+		newRow.append("<td>" + bookShard["prirep"] + "</td>");
+		newRow.append("<td>" + bookShard["state"] + "</td>");
+		newRow.append("<td>" + bookShard["docs"] + "</td>");
+		newRow.append("<td>" + bookShard["store"] + "</td>");
+		newRow.append("<td>" + bookShard["ip"] + "</td>");
+		newRow.append("<td>" + bookShard["node"] + "</td>");
+		if (bookShard["extra"] != null) {
+			newRow.append("<td>" + bookShard["extra"] + "</td>");
+		}
+		$("#bookShards").append($(newRow)); 
+	} 
+	
+	var userShards = message["shards"]["gutenberg-users"];
+	
+	for (var i = 0; i < userShards.length; i++) {
+		var userShard = userShards[i];
+		var newRow = $("<tr></tr>");
+		newRow.append("<td>" + userShard["index"] + "</td>");
+		newRow.append("<td>" + userShard["shard"] + "</td>");
+		newRow.append("<td>" + userShard["prirep"] + "</td>");
+		newRow.append("<td>" + userShard["state"] + "</td>");
+		newRow.append("<td>" + userShard["docs"] + "</td>");
+		newRow.append("<td>" + userShard["store"] + "</td>");
+		newRow.append("<td>" + userShard["ip"] + "</td>");
+		newRow.append("<td>" + userShard["node"] + "</td>");
+		$("#bookShards").append($(newRow)); 
+	} 
+	
+
+	// add buttons 
+	for (var i = 0; i < message["hosts"].length; i++) {
+		var node = message["nodes"][i];
+		var toto=$('<input/>').attr({
+            type: "button",
+            id: "action" + i,
+            name: "action",
+            value: (node["name"] == null) ? 'start' : 'stop'
+        });
+		$("#insert" + i).append(toto);	
+		
+	}// for
+	
+	// add new buttons 
+	for (var i = 0; i < message["hosts"].length; i++) {
+		var host = message["hosts"][i];
+		var exclu = message["exclusions"][host];// it is a map, not an array
+		var toto=$('<input/>').attr({
+            type: "button",
+            id: "exclude" + i,
+            name: "exclude",
+            value: (exclu == true) ? 'include' : 'exclude'
+        });
+		$("#insert" + i).append(toto);	
+		
+	}// for
+
+	// add callback function
+	for (var i = 0; i < message["hosts"].length; i++) {
+		var j = i;
+		var node = message["nodes"][i];	
+		if (node["name"] == null) {
+			$("#action" + j).click(start(message["hosts"][i]));
+		} else {
+			$("#action" + j).click(stop(message["hosts"][i]));	
+		}
+	}
+		
+	// add new callback function
+	for (var i = 0; i < message["hosts"].length; i++) {
+		var host = message["hosts"][i];
+		var exclu = message["exclusions"][host];// it is a map, not an array
+		var j = i;
+		if (exclu == true) {
+			$("#exclude" + j).click(include(message["hosts"][i]));
+		} else {
+			$("#exclude" + j).click(exclude(message["hosts"][i]));	
+		}
+	}
+}
+
+$(function () {
+    $("form").on('submit', function (e) {
+        e.preventDefault();
+    });
+    $( "#connect" ).click(function() { connect(); });
+    $( "#disconnect" ).click(function() { disconnect(); });
+    $( "#send" ).click(function() { sendName(); });
+    $( "#clear" ).click(function() { clear(); });
+});
+    
+</script>
+</head>
+
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="connect">WebSocket connection:</label>
+                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                    </button>
+                    <!--button id="clear" class="btn btn-default" type="submit">Clear
+                    </button-->
+                
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+         	<h1 id="cluster"></h1>
+            <h2 id="compressed_size_in_bytes"></h2>
+            <h2 id="master_node"></h2>
+            <br />
+            <h1>Cluster</h1>
+            <table id="cluster" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ip</th><th>node</th><th>master</th><th>excluded</th>
+                </tr>
+                </thead>
+                <tbody id="nodes">
+                </tbody>
+            </table>
+            <br />
+            <h1>Shards</h1>
+            <table id="books" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>index</th><th>shard</th><th>prirep</th><th>state</th><th>docs</th><th>store</th><th>ip</th><th>node</th><th></th>
+                </tr>
+                </thead>
+                <tbody id="bookShards">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

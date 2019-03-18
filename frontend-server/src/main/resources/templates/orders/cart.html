@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='cart')">
+</head>    
+<body>
+
+	<div th:replace="fragments/main::display"></div>
+    
+    <div th:if="${not #lists.isEmpty(items)}">
+      
+      <h2 th:text="'Your cart'"></h2>
+    
+      <table class="cartTable">
+        <thead>
+        <tr class="cartTable">
+        	<th th:text="'Title'"></th>   
+            <th th:text="'Quantity'"></th>
+            <th th:text="'Price'"></th>         
+        </tr>
+        </thead>
+        <tbody>
+   		<tr class="cartTable" th:each="item : ${items}">
+        	<td th:text="${item.title}"></td>
+            <td th:text="${item.quantity}"></td>
+            <td th:text="${item.price}"></td>
+        </tr>
+        <tr class="cartTable">
+        	<td th:text="'Subtotal'"></td>
+        	<td></td>
+        	<td th:text="${subtotal}"></td>
+        </tr>
+        </tbody>
+	  </table>
+	  
+	  <br /><br />
+	  
+	  <form action="#" th:action="@{/payment}" method="get">
+        <p><input type="submit" th:value="'Proceed to Checkout'" /></p>
+	  </form>
+	  
+	  <form action="#" th:action="@{/editCart}" method="get">
+    	<p><input type="hidden" id="redirectUrl" name="redirectUrl" value="getCart" /></p>
+        <p><input type="submit" th:value="'Edit your Cart'" /></p>
+	  </form>
+	  
+	</div>
+	
+    <div th:if="${#lists.isEmpty(items)}">
+	  <h2 th:text="'Your cart is empty'"></h2>
+	</div>
+	
+
+</body>
+</html>

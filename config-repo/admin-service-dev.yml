@@ -1,0 +1,42 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /admin
+    
+spring:
+  data:
+    mongodb:
+      uri: mongodb://spring:password1234@books-mongodb:27017/booksonline
+    
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: bookChangeTopic
+          content-type: application/json
+          binder: local_rabbit
+      binders:
+        local_rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: rabbitmq-server
+                port: 5672
+                username: spring
+                password: password1234
+                virtual-host: /
+  
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://gutenberg-eureka:8761/eureka/
+
+elasticsearch-host: "localhost"
+elasticsearch-port-one: 9200
+elasticsearch-port-two: 9201
+elasticsearch-scheme: "http"

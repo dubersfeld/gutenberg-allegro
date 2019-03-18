@@ -1,0 +1,17 @@
+#server:
+#  port: 8081
+#  servlet:
+#    context-path:
+         
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://eurekaserver:8761/eureka/
+
+#elasticsearch-port-one: 9200
+#elasticsearch-port-two: 9201
+#elasticsearch-scheme: "http"

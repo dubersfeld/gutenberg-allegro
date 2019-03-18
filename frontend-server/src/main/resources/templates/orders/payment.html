@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header::header(title='payment')">
+</head>    
+<body>
+
+	<div th:replace="fragments/main::display"></div>
+    
+    <div th:if="${not #lists.isEmpty(items)}">
+    
+      <div th:if="${placed}">
+        <h2 th:text="'Your order was successfully placed'"></h2>
+      </div>
+    
+      <div th:if="${denied}">
+        <h2 th:text="'Your payment was not authorized'"></h2>
+      </div>
+     
+	  <h2 th:text="'Your order'"></h2>
+    
+      <div th:if="${items}">
+    
+        <table class="cartTable">
+          <tr class="cartTable">
+        	<th th:text="'Title'"></th>   
+            <th th:text="'Quantity'"></th>
+            <th th:text="'Price'"></th>
+          
+          </tr>
+   		  <tr class="cartTable" th:each="item : ${items}">
+        	<td th:text="${item.title}"></td>
+            <td th:text="${item.quantity}"></td>
+            <td th:text="${item.price}"></td>
+          </tr>
+          <tr class="cartTable">
+        	<td th:text="'total'"></td>
+        	<td></td>
+        	<td th:text="${total}"></td>
+          </tr>
+	    </table>
+	  
+	    <br />
+	    <a th:href="@{/backHome}" th:text="'Continue Shopping'"></a>
+	    <br /><br />
+	  
+	    <form action="#" th:action="@{/editCart}" method="get">
+    	  <p><input type="hidden" id="redirectUrl" name="redirectUrl" value="payment" /></p>
+          <p><input type="submit" th:value="'Edit your Cart'" th:disabled="${placed}" /></p>
+	    </form>
+	 
+	    <h2 th:text="'Your shipping address foutre'"></h2>
+	   <span th:text="${addressMult}"></span><br/>
+	    <span th:text="${address.street}"></span><br/>
+	    <span th:text="${address.city}"></span><br/>
+	    <span th:text="${address.zip}"></span><br/>
+	    <span th:text="${address.state}"></span><br/>
+	    <span th:text="${address.country}"></span><br/>
+	 
+	 	<div th:if="${addressMult} >= 2">
+	    <form action="#" th:action="@{/changeShippingAddress}" method="get">
+    	  <p><input type="hidden" id="redirectUrl" name="redirectUrl" value="payment" /></p>
+          <p><input type="submit" th:value="'Change your shipping address'" /></p>
+	    </form>
+	  	</div>
+	  
+	  	<br /><br />
+	    <h2 th:text="'Your payment method'"></h2>
+	    <span th:text="'Card Number: '"></span><span th:text="${payMeth.cardNumber}"></span><br/>
+	    <span th:text="'Name on Card: '"></span><span th:text="${payMeth.name}"></span><br/>
+	  
+	  	<div th:if="${payMethMult} >= 2">
+	    <form action="#" th:action="@{/changePaymentMethod}" method="get">
+    	  <p><input type="hidden" id="redirectUrl" name="redirectUrl" value="payment" /></p>
+          <p><input type="submit" th:value="'Change your payment method'" /></p>
+	    </form>
+	    </div>
+	
+	    <form action="#" th:action="@{/authorizePayment}" th:object="${paymentForm}" method="post">
+    	  <p><input type="hidden" th:id="cardNumber" th:name="cardNumber" th:value="${payMeth.cardNumber}" th:readonly="readonly"/></p>
+          <p><input type="hidden" th:id="name" th:name="name" th:value="${payMeth.name}" th:readonly="readonly"/></p>
+          <p><input type="submit" th:value="'Place order'" th:disabled="${placed}" /></p>
+	    </form>
+	   
+	  </div>
+	
+	  <div th:if="${not #lists.isEmpty(others)}">
+	  
+	    <div th:each="disp : ${others}" >
+	      <h3 th:text="'Customers who bought the book: ' + ${disp.book.title} + ' frequently also bought:'"></h3>
+	      <table>
+	      <tr th:each="book : ${disp.otherBooks}">
+	        <td>
+	          <a th:href="@{'/books/' + ${book.slug}}" th:text="${book.title}"></a>
+	        </td>
+	      </tr>
+	      </table>
+	    </div>
+	
+	  </div>
+	  
+	</div>
+	
+	<div th:if="${#lists.isEmpty(items)}">
+	  <h2 th:text="'Your cart is empty'"></h2>
+	</div>
+	
+</body>
+</html>
