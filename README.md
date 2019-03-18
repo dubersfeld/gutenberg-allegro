@@ -11,7 +11,7 @@ In addition I used Spring Tool Suite for developing this demo but it is not requ
 
 # 1 Basic application
 
-Here is the list of all 13 containers:
+Here is the list of all 9 containers:
 
 Server            | Image                                               | Port | Function             | Database connection
 ---------------   | ----------------------------------------------------| ---- | -------------------  | -------------------
