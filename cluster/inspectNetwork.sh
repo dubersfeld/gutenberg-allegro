@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo docker network inspect esnet
+docker network inspect esnet

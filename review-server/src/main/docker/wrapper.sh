@@ -7,7 +7,7 @@ while ! `nc -z $CONFIGSERVER_HOST $CONFIGSERVER_PORT`; do
     sleep 10; 
 done
 
-echo "ElasticSearch Server $CONFIGSERVER_HOST up and running at $CONFIGSERVER_PORT"
+echo "Config Server $CONFIGSERVER_HOST up and running at $CONFIGSERVER_PORT"
 
 while ! `nc -z $ELASTICSERVER_HOST $ELASTICSERVER_PORT`; do 
     echo "*********************************************************************"

@@ -1,4 +1,0 @@
-#!/bin/bash
-
-sudo chown -R dominique target
-sudo ./mvnw clean package docker:build

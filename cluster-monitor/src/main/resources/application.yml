@@ -7,16 +7,13 @@ server:
 websocketUrl: "ws://localhost:9091/gutenberg-websocket"
 
 # edit to match your own filesystem
-clientUrl: "/home/dominique/gutenberg-allegro/cluster"
+clientUrl: "/home/ubersfeld/Documents/gutenberg-allegro/cluster"
 
 startServerUrl: "http://localhost:9091/startNode"
 stopServerUrl: "http://localhost:9091/stopNode"
 excludeServerUrl: "http://localhost:9091/excludeNode"
 includeServerUrl: "http://localhost:9091/includeNode"
   
-
-# edit to match your own sudo password
-password: mysudopassword
 
 ips: "172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6"
 

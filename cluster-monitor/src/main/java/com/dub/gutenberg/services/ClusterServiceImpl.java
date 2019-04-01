@@ -31,9 +31,6 @@ public class ClusterServiceImpl implements ClusterService {
 	@Value("${clientUrl}")
 	private String clientUrl;	
 	
-	@Value("${password}")
-	private String password;
-
 	@Autowired
 	private HostsHolder hostsHolder;
 	
@@ -94,8 +91,7 @@ public class ClusterServiceImpl implements ClusterService {
 	    		  new StreamGobbler(process.getInputStream(), System.out::println);    		
 		Executors.newSingleThreadExecutor().submit(streamGobbler);
 		
-		output.write(password + "\n");
-        output.flush();
+        	output.flush();
  			
 		return "STARTED";
 	}
@@ -112,16 +108,15 @@ public class ClusterServiceImpl implements ClusterService {
 	
 		Process process;
 		
-		//try {
-			process = builder.start();
-			OutputStreamWriter output = new OutputStreamWriter(process.getOutputStream());
+		process = builder.start();
+		OutputStreamWriter output = new OutputStreamWriter(process.getOutputStream());
 			
-			StreamGobbler streamGobbler = 
+		StreamGobbler streamGobbler = 
 	    		  new StreamGobbler(process.getInputStream(), System.out::println);    		
-			Executors.newSingleThreadExecutor().submit(streamGobbler);
+		Executors.newSingleThreadExecutor().submit(streamGobbler);
 		
-			output.write(password + "\n");
-            output.flush();
+		
+            	output.flush();
    	
 		return "STOPPED";
 	}
@@ -131,7 +126,7 @@ public class ClusterServiceImpl implements ClusterService {
 		String container = hostsHolder.getContainers().get(ip);
 		String volume = hostsHolder.getVolumes().get(ip);
 			
-		String command = "sudo -S ./restartNode.sh " 
+		String command = "./restartNode.sh " 
 				+ container + " " + ip + " " + volume;
 		
 		return command;		 
@@ -141,7 +136,7 @@ public class ClusterServiceImpl implements ClusterService {
 		
 		String container = hostsHolder.getContainers().get(ip);
 			
-		String command = "sudo -S ./stopContainer.sh " 
+		String command = "./stopContainer.sh " 
 				+ container;
 		
 		return command;		 

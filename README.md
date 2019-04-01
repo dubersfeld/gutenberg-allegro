@@ -40,28 +40,47 @@ Here are the steps to run the application:
 
 ## 1.1 Images creation
 
-In each of the 10 project subdirectories:
+Run the bash script build_spring.
 
-config-server
-eureka-service
-book-server
-review-server
-order-server
-user-server
-zuul-server
-frontend-server
+```
+#!/bin/bash
+# filename build_spring
 
-run the command: `[sudo] mvn clean package docker:build`
+for server in 'book-server' 'config-server' 'order-server' 'review-server' 'user-server' 'eureka-service' 'zuul-server' 'frontend-server'
+do 
+    cd ../$server
+    pwd
+    ./build.sh
 
-This will create the 8 Spring images. The remaining non Spring image will be pulled from a Docker repository.
+    echo $?
+    if [ "$?" -ne 0 ]
+    then 
+      echo "Build failed for $server"
+      exit "$?"
+    fi 
+done
+```
+
+This creates the 8 Spring images. The remaining non Spring image will be pulled from a Docker repository.
 
 ## 1.2 Running the application
 
-### 1.2.1 Starting the application
+### 1.2.1 Adding user to Docker group
+
+To avoid using sudo run this command:
+
+sudo usermod -aG docker $USER
+
+### 1.2.2 Setting vm.max_map_count
+Add the line: `vm.max\_map\_count=262144`
+to the file /etc/sysctl.conf
+Note: rebooting may be needed.
+
+### 1.2.3 Starting the application
 To start the application go to docker subdirectory and run the command:
 
 ```
-sudo docker-compose up
+docker-compose up
 ```
 
 All running Spring containers can be seen on Eureka port 8761.
@@ -95,7 +114,7 @@ It creates all prepopulated indices.
 To stop the application run the command in docker subdirectory:
 
 ```
-sudo docker-compose down
+docker-compose down
 ```
 
 Here is a snapshot of the welcome page:
@@ -130,7 +149,7 @@ Here are two snapshots of Postman interaction:
 
 Run this command:
 ```
-sudo docker network create --driver=bridge --subnet=172.19.0.0/16 --gateway=172.19.0.254 gutenberg
+docker network create --driver=bridge --subnet=172.19.0.0/16 --gateway=172.19.0.254 gutenberg
 ```
 
 It creates an external network named gutenberg.
@@ -139,18 +158,18 @@ It creates an external network named gutenberg.
 
 Create 5 volumes (one for each node) with these commands:
 ```
-sudo docker volume create gutenberg-es-data1
-sudo docker volume create gutenberg-es-data2
-sudo docker volume create gutenberg-es-data3
-sudo docker volume create gutenberg-es-data4
-sudo docker volume create gutenberg-es-data5
+docker create volume gutenberg-es-data1
+docker create volume gutenberg-es-data2
+docker create volume gutenberg-es-data3
+docker create volume gutenberg-es-data4
+docker create volume gutenberg-es-data5
 ```
 
 ## 2.3 Cluster creation
 To start the cluster emulation go to the cluster directory and run the command:
 
 ```
-sudo docker-compose up 
+docker-compose up 
 ``` 
 
 It starts a 5 nodes ElasticSearch cluster with fixed IPs:

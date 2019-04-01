@@ -3,7 +3,7 @@
 echo "********************************************************"
 echo "Waiting for the eureka server to start on port $EUREKASERVER_PORT"
 echo "********************************************************"
-while ! `nc -z eurekaserver $EUREKASERVER_PORT`; do sleep 8; done
+while ! `nc -z eurekaserver $EUREKASERVER_PORT`; do sleep 10; done
 echo "******* Eureka Server has started"
 
 echo "********************************************************"
