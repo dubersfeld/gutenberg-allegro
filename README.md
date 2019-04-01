@@ -139,11 +139,11 @@ It creates an external network named gutenberg.
 
 Create 5 volumes (one for each node) with these commands:
 ```
-sudo docker create volume gutenberg-es-data1
-sudo docker create volume gutenberg-es-data2
-sudo docker create volume gutenberg-es-data3
-sudo docker create volume gutenberg-es-data4
-sudo docker create volume gutenberg-es-data5
+sudo docker volume create gutenberg-es-data1
+sudo docker volume create gutenberg-es-data2
+sudo docker volume create gutenberg-es-data3
+sudo docker volume create gutenberg-es-data4
+sudo docker volume create gutenberg-es-data5
 ```
 
 ## 2.3 Cluster creation
