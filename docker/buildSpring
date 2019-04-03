@@ -1,0 +1,15 @@
+#!/bin/bash
+
+for server in 'book-server' 'config-server' 'order-server' 'review-server' 'user-server' 'eureka-service' 'zuul-server' 'frontend-server'
+do 
+    cd ../$server
+    pwd
+    ./build.sh
+
+    echo $?
+    if [ "$?" -ne 0 ]
+    then 
+      echo "Build failed for $server"
+      exit "$?"
+    fi 
+done

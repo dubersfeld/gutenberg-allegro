@@ -44,7 +44,7 @@ Run the bash script build_spring.
 
 ```
 #!/bin/bash
-# filename build_spring
+# filename buildSpring
 
 for server in 'book-server' 'config-server' 'order-server' 'review-server' 'user-server' 'eureka-service' 'zuul-server' 'frontend-server'
 do 
@@ -158,11 +158,11 @@ It creates an external network named gutenberg.
 
 Create 5 volumes (one for each node) with these commands:
 ```
-docker create volume gutenberg-es-data1
-docker create volume gutenberg-es-data2
-docker create volume gutenberg-es-data3
-docker create volume gutenberg-es-data4
-docker create volume gutenberg-es-data5
+docker volume create gutenberg-es-data1
+docker volume create gutenberg-es-data2
+docker volume create gutenberg-es-data3
+docker volume create gutenberg-es-data4
+docker volume create gutenberg-es-data5
 ```
 
 ## 2.3 Cluster creation
