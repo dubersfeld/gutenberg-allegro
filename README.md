@@ -105,6 +105,7 @@ Rotas    | rotas1234
 Once the servers have started go to docker/elasticsearch folder and run the commands:
 ```
 ./createBooks.sh
+./createCategories.sh
 ./createUsers.sh
 ./createReviews.sh
 ./createOrders.sh
@@ -142,6 +143,71 @@ Here are two snapshots of Postman interaction:
 
 ![alt text](images/setOrderShipped.png "Set order shipped")
 
+## 1.6 Running as as service
+
+Here I assume that systemd is installed. It is native from RedHat distros but also available on Ubuntu since Ubuntu 16.04
+
+### 1.6.1 Creating a systemd file
+
+In systemd configuration directory (In Ubuntu it is /etc/systemd/system) add a systemd file name gutenberg.service:
+
+```
+# filename gutenberg.service
+[Unit]
+Description=Simple Docker ElasticsSearch Application
+After=network.target
+After=docker.service
+Requires=docker.service
+
+[Service]
+User=ubersfeld # edit to match your own username
+# edit to match your own filesystem
+ExecStart=/bin/bash -c 'cd ~/Documents/gutenberg-allegro/docker ; ./start.sh'
+ExecStop=/bin/bash -c 'cd ~/Documents/gutenberg-allegro/docker ; ./stop.sh'
+
+[Install]
+WantedBy=multi-user.target
+```
+
+To start gutenberg as a service run this command:
+
+```
+systemctl start gutenberg
+```
+
+To check the status run this command: `systemctl status gutenberg`. The response should look like:
+
+```
+systemctl status gutenberg
+● gutenberg.service - Simple Docker ElasticsSearch Application
+   Loaded: loaded (/etc/systemd/system/gutenberg.service; enabled; vendor preset: enabled)
+   Active: active (running) since Sun 2019-04-07 12:39:21 CEST; 1min 37s ago
+  Process: 5892 ExecStop=/bin/bash -c cd /home/ubersfeld/Documents/gutenberg-allegro/docker ; ./stop.sh (code=exited, status=0/SUCCESS)
+ Main PID: 17630 (bash)
+    Tasks: 14 (limit: 4915)
+   CGroup: /system.slice/gutenberg.service
+           ├─17630 /bin/bash -c cd /home/ubersfeld/Documents/gutenberg-allegro/docker ; ./start.sh
+           ├─17631 /bin/bash ./start.sh
+           ├─17635 docker-compose up
+           └─17642 docker-compose up
+```
+
+Then populate the indices like in 1.2.2
+
+To stop the service run the command:
+```
+systemctl stop gutenberg
+```
+
+To enable the service to start on boot up run this command:
+```
+systemctl enable gutenberg
+```
+
+To disable the service to start on boot up run this command:
+```
+systemctl disable gutenberg
+```
 
 # 2 Cluster emulation
 

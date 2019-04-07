@@ -25,7 +25,7 @@ services:
     # edit to match your own filesystem
     volumes:
       - type: bind
-        source: /home/dominique/gutenberg-allegro/config-repo
+        source: /home/ubersfeld/Documents/gutenberg-allegro/config-repo
         target: /tmp/config-repo
     ports:
       - "8888:8888"
