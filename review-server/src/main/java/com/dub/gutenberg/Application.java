@@ -36,8 +36,7 @@ public class Application {
 	
 	@Bean
 	@DependsOn("elasticsearchConfig")
-	public RestHighLevelClient client() {
-		System.out.println("Fucking client " + elasticsearchConfig.getHost());
+	public RestHighLevelClient client() {		
 		RestHighLevelClient client = new RestHighLevelClient(
 	                RestClient.builder(
 	                        new HttpHost(

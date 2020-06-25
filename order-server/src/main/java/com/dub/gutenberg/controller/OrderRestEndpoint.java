@@ -64,14 +64,11 @@ public class OrderRestEndpoint {
 	public ResponseEntity<Order> saveOrder(
 									@RequestBody Order order) {
 		
-		System.out.println("Fucking /updateOrder begin " + (order == null));
 		Order newOrder = null;
 		
 		
 		try {
-			System.out.println("Fucking /updateOrder sator " + (orderService == null));
 			newOrder = orderService.saveOrder(order, false);// no creation here	
-			System.out.println("Fucking /updateOrder arepo");
 			
 			return new ResponseEntity<Order>(newOrder, HttpStatus.OK);	
 		} catch (IOException e) {

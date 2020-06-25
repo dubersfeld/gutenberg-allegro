@@ -91,8 +91,6 @@ public class ReviewRestEndpoint {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createReview(@RequestBody Review review) throws URISyntaxException {
 		
-		System.out.println("Fucking /createReview begin "
-				+ review.getText());
 		String newReview;
 		try {
 			newReview = reviewService.createReview(review);

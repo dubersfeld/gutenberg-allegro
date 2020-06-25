@@ -50,10 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
 				
 		String reviewsURI = serviceConfig.getBaseReviewsURL() + CREATE_REVIEW;
 		//String reviewsURI = "http://localhost:8082" + "/createReview";
-		
-		System.out.println("Fucking createReview reviewsURI "
-				+ reviewsURI);
-		
+			
 		ResponseEntity<Review> response 
 		= restTemplate.postForEntity(reviewsURI, review, Review.class);
 		

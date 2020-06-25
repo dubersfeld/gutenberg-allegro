@@ -61,16 +61,12 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Order saveOrder(Order order) {
 		
-		System.out.println("Fucking saveOrder begin " + (order == null));
 		String orderURI = baseOrdersUrl + UPDATE_ORDER;
 		
 		try {
-			System.out.println("Fucking saveOrder sator "
-					+ orderURI);
 			ResponseEntity<Order> response 
 			= restTemplate.postForEntity(orderURI, order, Order.class);
 			
-			System.out.println("Fucking saveOrder arepo");
 			Order newOrder = response.getBody();
 		
 			return newOrder;

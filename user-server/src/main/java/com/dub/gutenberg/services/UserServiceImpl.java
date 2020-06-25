@@ -190,19 +190,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String createUser(MyUser user) throws IOException {
-	
-		System.out.println("Fucking createUser begin");
 		
 		// First check if username is already present
 		MyUser checkUser = this.findByUsername(user.getUsername());
 	
-		System.out.println("Fucking createUser sator");
 		if (checkUser != null) {
-			System.out.println("Fucking createUser duplicate");
 			throw new DuplicateUserException();// username already present
 		}
 		
-		System.out.println("Fucking createUser arepo");
 		IndexRequest indexRequest = new IndexRequest(INDEX);
 		
 		Map<String, Object> dataMap = objectMapper.convertValue(user, 
@@ -215,43 +210,4 @@ public class UserServiceImpl implements UserService {
 	    return response.getId();
 	}
 	
-	
-	/*
-	private MyUser doFindById(String userId) throws IOException {
-		
-		MyUser user = null;
-		
-		GetRequest getRequest = new GetRequest(INDEX);
-		getRequest.type(TYPE);     
-	 	getRequest.id(userId);
-	 	
-	 	GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
-	 		
-	 	if (getResponse != null && getResponse.getSourceAsMap() != null) {
-	 		user = objectMapper.convertValue(getResponse.getSourceAsMap(), MyUser.class);	    	
-	 		user.setId(userId);
-	 		return user;
-	 	} else {
-	 		throw new UserNotFoundException();
-	 	}
-	}
-	*/
-	
-	/*
-	private MyUser doUpdate(MyUser user) throws IOException {
-		// update MyUser ES document
-		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, user.getId())
-		                .fetchSource(true).setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL); // Fetch Object after its update
-		    
-		String userJson = objectMapper.writeValueAsString(user);
-        
-		updateRequest.doc(userJson, XContentType.JSON);		        
-		UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
-		        	       
-		MyUser updatedUser = objectMapper.convertValue(updateResponse.getGetResult().sourceAsMap(), MyUser.class);//.s, toValueType)
-		          	        	            	              
-		return updatedUser;
-	}
-	*/
-
 }

@@ -39,8 +39,6 @@ public class UserRestEndpoint {
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> createUser(
 								@RequestBody MyUser user) {	
-		System.out.println("Fucking /createUser begin "
-				+ (user == null));
 			
 		try {
 			String newUser = userService.createUser(user);

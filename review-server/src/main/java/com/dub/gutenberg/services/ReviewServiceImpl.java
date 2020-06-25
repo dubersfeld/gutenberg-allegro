@@ -49,24 +49,16 @@ public class ReviewServiceImpl implements ReviewService{
 	@Override
 	public String createReview(Review review) throws IOException {
 		
-		System.out.println("Fucking ReviewService.createReview begin client "
-				+ client + " review " + review.getText());
 		IndexRequest indexRequest = new IndexRequest(INDEX);
-		
-		System.out.println("Fucking ReviewService.createReview check " 
-				+ this.getReviewById("1").getText());
-		
+			
 		Map<String, Object> dataMap = objectMapper.convertValue(review, 
    				new TypeReference<Map<String, Object>>() {});
 
 		indexRequest.source(dataMap);
 		indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
-		//indexRequest.
-		
+				
 		IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
-	    //client.re    
-		System.out.println("Fucking response " + response.getId());
-		//;.getLocation(routing));
+	    
 	    return response.getId();	
 	}
 
