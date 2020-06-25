@@ -3,10 +3,11 @@ I present here a microservice-oriented application that is a Docker version of t
  
 Here are the prerequisites for running the complete application:
 
-A recent Docker version installed (I used 17.12.0-ce)
-A recent Apache Maven version installed (I used 3.3.9)
-An HTTP tool like Postman or equivalent. 
-
+A recent Docker version installed (I used 19.03.11-ce)
+A recent Apache Maven version installed (I used 3.6.0)
+An HTTP tool like Postman or equivalent.
+I took advantage of the new native Docker support provided by Spring Boot 2.3.
+  
 In addition I used Spring Tool Suite for developing this demo but it is not required for running the application.
 
 # 1 Basic application
@@ -17,12 +18,12 @@ Server            | Image                                               | Port |
 ---------------   | ----------------------------------------------------| ---- | -------------------  | -------------------
 elastic-books     | docker.elastic.co/elasticsearch/elasticsearch:6.6.1 | 9200 | Schemaless database  | 
 config-server     | gutenberg/config-server                             | 8888 | Configuration server | None
-eurekaserver      | gutenberg/eureka-service                            | 8761 | Discovery server     | None
+eurekaserver      | gutenberg/eureka-server                             | 8761 | Discovery server     | None
 book-service      | gutenberg/book-server                               | 8081 | Book requests        | gutenberg-books
 review-service    | gutenberg/review-server                             | 8082 | Review requests      | gutenberg-reviews
 order-service     | gutenberg/order-server                              | 8083 | Order requests       | gutenberg-orders
 user-service      | gutenberg/user-server                               | 8084 | User requests        | gutenberg-requests
-zuul-service      | gutenberg/zuul-server                               | 5555 | Gateway              | None
+gateway-service   | gutenberg/gateway-server                            | 5555 | Gateway              | None
 frontend-service  | gutenberg/frontend-server                           | 8080 | frontend             | None
 
 A volume is used for persistence.
@@ -31,10 +32,10 @@ A gateway is used to hide some Spring servers. Here is the list:
 
 Server           | Port | Gateway URI
 ---------------- | ---- | -------------------------
-book-service     | 8081 | zuul-service:5555/books
-review-service   | 8082 | zuul-service:5555/reviews
-order-service    | 8083 | zuul-service:5555/orders
-user-service     | 8084 | zuul-service:5555/users
+book-service     | 8081 | gateway-service:5555/books
+review-service   | 8082 | gateway-service:5555/reviews
+order-service    | 8083 | gateway-service:5555/orders
+user-service     | 8084 | gateway-service:5555/users
 
 Here are the steps to run the application:
 
@@ -46,8 +47,9 @@ Run the bash script build_spring.
 #!/bin/bash
 # filename buildSpring
 
-for server in 'book-server' 'config-server' 'order-server' 'review-server' 'user-server' 'eureka-service' 'zuul-server' 'frontend-server'
+for server in 'book-server' 'config-server' 'order-server' 'review-server' 'user-server' 'eureka-server' 'gateway-server' 'frontend-server';
 do 
+    echo ${server}
     cd ../$server
     pwd
     ./build.sh
@@ -57,9 +59,32 @@ do
     then 
       echo "Build failed for $server"
       exit "$?"
-    fi 
+    fi
 done
 ```
+
+Then run the bash script buildSecond:
+
+```
+#!/bin/bash
+#buildSecond
+
+for f in 'book' 'config' 'frontend' 'gateway' 'order' 'review' 'user' 'eureka';
+do 
+   echo ${f}
+   cd $f
+   pwd
+   ./build.sh
+   cd ..
+
+   echo $?
+   if [ "$?" -ne 0 ]
+   then 
+      echo "Build failed for $f"
+      exit "$?"
+   fi
+done;
+``` 
 
 This creates the 8 Spring images. The remaining non Spring image will be pulled from a Docker repository.
 
@@ -71,10 +96,9 @@ To avoid using sudo run this command:
 
 sudo usermod -aG docker $USER
 
-### 1.2.2 Setting vm.max_map_count
-Add the line: `vm.max\_map\_count=262144`
-to the file /etc/sysctl.conf
-Note: rebooting may be needed.
+### 1.2.1 Volume creation
+
+To create the volume used for persistence run the command: `docker volume create gutenberg-es-data`
 
 ### 1.2.3 Starting the application
 To start the application go to docker subdirectory and run the command:
@@ -135,7 +159,7 @@ Here is a snapshot of the search results for keywords "gorilla quantum pattern c
 Click on register on Login page then fill the registration form. The username should not be already present in gutenberg-users  index. Once registered the new user can connect to frontend server.
 
 ## 1.5 Using admin-service
-To access admin-service the best way is to use Postman or any similar application. The URI is localhost:9090/admin.
+To access admin-service the best way is to use Postman or any similar application. The URI is localhost:9090/admin. To start admin-server go in subdirectory admin-server and run the command `mvn spring-boot-run`. 
 
 Here are two snapshots of Postman interaction:
 
@@ -178,18 +202,27 @@ systemctl start gutenberg
 To check the status run this command: `systemctl status gutenberg`. The response should look like:
 
 ```
-systemctl status gutenberg
 ● gutenberg.service - Simple Docker ElasticsSearch Application
-   Loaded: loaded (/etc/systemd/system/gutenberg.service; enabled; vendor preset: enabled)
-   Active: active (running) since Sun 2019-04-07 12:39:21 CEST; 1min 37s ago
-  Process: 5892 ExecStop=/bin/bash -c cd /home/ubersfeld/Documents/gutenberg-allegro/docker ; ./stop.sh (code=exited, status=0/SUCCESS)
- Main PID: 17630 (bash)
-    Tasks: 14 (limit: 4915)
+   Loaded: loaded (/etc/systemd/system/gutenberg.service; disabled; vendor preset: enabled)
+   Active: active (running) since Tue 2020-06-23 09:42:29 CEST; 4s ago
+ Main PID: 9708 (bash)
+    Tasks: 22 (limit: 4915)
    CGroup: /system.slice/gutenberg.service
-           ├─17630 /bin/bash -c cd /home/ubersfeld/Documents/gutenberg-allegro/docker ; ./start.sh
-           ├─17631 /bin/bash ./start.sh
-           ├─17635 docker-compose up
-           └─17642 docker-compose up
+           ├─9708 /bin/bash -c cd ~/Documents/workspace-allegro-clean/docker ; ./start.sh
+           ├─9709 /bin/bash -c cd ~/Documents/workspace-allegro-clean/docker ; ./start.sh
+           ├─9710 docker-compose up
+           └─9718 docker-compose up
+
+juin 23 09:42:29 dominique-Inspiron-3671 systemd[1]: Started Simple Docker ElasticsSearch Application.
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_gateway-service_1 ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating elastic-books            ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_eurekaserver_1    ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_frontend-server_1 ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_book-service_1    ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_user-service_1    ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_config-server_1   ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_review-service_1  ...
+juin 23 09:42:30 dominique-Inspiron-3671 bash[9708]: Creating docker_order-service_1   ...
 ```
 
 Then populate the indices like in 1.2.2
@@ -235,10 +268,72 @@ docker volume create gutenberg-es-data5
 To start the cluster emulation go to the cluster directory and run the command:
 
 ```
-docker-compose up 
+./start.sh 
 ``` 
 
-It starts a 5 nodes ElasticSearch cluster with fixed IPs:
+Here I chose to use a bash script because docker-compose does not behave as expected with the new version 7.7.x of Elasticsearch (master discovery fails).
+
+```
+#!/bin/bash
+
+# filename start.sh
+
+NAME=elasticsearch1
+IP=172.19.0.2
+VOLUME=elasticsearch1
+
+echo "NAME $NAME"
+echo "IP $IP"
+echo "VOLUME $VOLUME"
+echo "Restarting node"
+
+docker run -e "cluster.name=gutenberg-cluster" -e "bootstrap.memory_lock=true" \
+--name $NAME \
+--ip $IP \
+-e "discovery.seed_hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6" \
+--ulimit memlock=-1:-1 \
+--volume "$VOLUME:/usr/share/elasticsearch/data" \
+--network gutenberg docker.elastic.co/elasticsearch/elasticsearch:7.7.1 &
+disown
+
+NAME=elasticsearch2
+IP=172.19.0.3
+VOLUME=elasticsearch2
+
+echo "NAME $NAME"
+echo "IP $IP"
+echo "VOLUME $VOLUME"
+echo "Restarting node"
+
+docker run -e "cluster.name=gutenberg-cluster" -e "bootstrap.memory_lock=true" \
+--name $NAME \
+--ip $IP \
+-e "discovery.seed_hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6" \
+--ulimit memlock=-1:-1 \
+--volume "$VOLUME:/usr/share/elasticsearch/data" \
+--network gutenberg docker.elastic.co/elasticsearch/elasticsearch:7.7.1 &
+disown
+
+NAME=elasticsearch3
+IP=172.19.0.4
+VOLUME=elasticsearch3
+
+echo "NAME $NAME"
+echo "IP $IP"
+echo "VOLUME $VOLUME"
+echo "Restarting node"
+
+docker run -e "cluster.name=gutenberg-cluster" -e "bootstrap.memory_lock=true" \
+--name $NAME \
+--ip $IP \
+-e "discovery.seed_hosts=172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6" \
+--ulimit memlock=-1:-1 \
+--volume "$VOLUME:/usr/share/elasticsearch/data" \
+--network gutenberg docker.elastic.co/elasticsearch/elasticsearch:7.7.1 &
+disown
+``` 
+
+It starts a 3 nodes ElasticSearch cluster with fixed IPs:
 
 ```
 172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6
@@ -247,7 +342,7 @@ It starts a 5 nodes ElasticSearch cluster with fixed IPs:
 Once the cluster has started go to the folder cluster/elasticsearch and run the shells createBooks.sh and createUsers.sh. Check the cluster on the IP:
 
 ```
-http://172.19.0.2/_cluster/health
+http://172.19.0.2:9200/_cluster/health
 ```
 
 The response should look like this screen shot:
@@ -266,21 +361,32 @@ Then hit localhost:9091 in a browser and click connect button. The response shou
 
 ![alt text](images/display1.png "Initial display")
 
-Click the exclude button on any node and see the shards relocate. The display should look like this screen shot:
+Click the exclude button on any non master node and see the shards relocate. The display should look like this screen shot:
 
 ![alt text](images/display2.png "Display after exclude")
-![alt text](images/display3.png "Display after exclude")
 
 Click the stop button on the same node and wait for the node to stop. The display should look like this screen shot:
 
-![alt text](images/display4.png "Display after stop")
+![alt text](images/display3.png "Display after stop")
 
 Start the stopped node again and when it is up click the include button. The shards should relocate one more time.
 
-![alt text](images/display5.png "Display after restart")
+![alt text](images/display4.png "Display after restart")
 
-![alt text](images/display6.png "Display after include")
-
+![alt text](images/display5.png "Display after include")
 
 Note that if the master node is stopped a new master is elected. The election process can take a significant time.
+
+To stop the cluster run the command:
+```
+./stop.sh
+```
+
+For a video demo follow this link:
+
+https://youtu.be/HSfKYiql7zg
+
+
+Cachan, June 25 2020 
+
 

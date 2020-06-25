@@ -135,26 +135,31 @@ public class OrderController {
 			value = "/payment", 
 			method = RequestMethod.GET)
 	public String payment(Model model, HttpServletRequest request) {
+		System.out.println("Fucking /payment begin");
 		
 		try {
 			HttpSession session = request.getSession();
 			Boolean placed = false;
 			Order order = null;
 		
+			System.out.println("Fucking /payment sator");
 			/** 
 			 * Initially Boolean placed == null 
 			 * placed not null only after redirection from authorize
 			 * */
 			if (session.getAttribute("placed") != null) {
 				placed = (Boolean)session.getAttribute("placed"); 
+				System.out.println("Fucking /payment placed");
 			}
 		
+			System.out.println("Fucking /payment arepo");
 			MyUser user = userUtils.getLoggedUser(session);
 		
 			String orderId = orderUtils.getActiveOrderId(session);
 			
 			order = orderService.getOrderById(orderId);
 		
+			System.out.println("Fucking /payment tenet");
 			// preparing order display
 		
 			List<DisplayItemPrice> items = displayUtils.getDisplayItemPrices(orderId);
@@ -182,6 +187,7 @@ public class OrderController {
 								.get(user.getMainShippingAddress());
 			}
 		
+			System.out.println("Fucking /payment opera");
 			model.addAttribute("address", shipAdd);
 		
 			PaymentMethod payMeth;
@@ -196,19 +202,24 @@ public class OrderController {
 								.get(user.getMainPayMeth());
 			}
 		
+			System.out.println("Fucking /payment rotas");
 			model.addAttribute("payMeth", payMeth);			
 			model.addAttribute("total", total);
 			session.setAttribute("total", order.getSubtotal());
 			//model.addAttribute("enclume", order.getSubtotal());
 			
 			if (session.getAttribute("paymentSuccess") != null) {// from redirection
+				System.out.println("Fucking /payment tiens");
 				placed = (Boolean)session.getAttribute("paymentSuccess");
 				model.addAttribute("placed", placed);
 				model.addAttribute("denied", !placed);
 				if (placed) {// success
+					System.out.println("Fucking /payment fume");
 					// add actual shipping address to order before persisting				
 					orderService.finalizeOrder(order, shipAdd, payMeth);	
+					System.out.println("Fucking /payment c'est du");
 					orderService.saveOrder(order);// actual persistence
+					System.out.println("Fucking /payment French");
 					orderUtils.invalidActiveOrderId(session);// order becomes non editable 
 					session.setAttribute("paymentSuccess", null);
 				} else {// failure, state transition to CART 
@@ -225,6 +236,7 @@ public class OrderController {
 		
 			model.addAttribute("others", others);
 		
+			System.out.println("Fucking /payment return");
 			return "orders/payment";
 		} catch (AccessDeniedException e) {
 			logger.warn("Exception caught " + e);

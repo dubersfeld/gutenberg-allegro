@@ -40,8 +40,8 @@ public class ClusterConfig {
 		for (int i = 0; i < containerArray.length; i++) {
 			containerList.add(containerArray[i]);
 		}
-		for (int i = 0; i < volumeArray.length; i++) {
-			volumeList.add(containerArray[i]);
+		for (int i = 0; i < containerArray.length; i++) {
+			volumeList.add(volumeArray[i]);
 		}
 	}
 	

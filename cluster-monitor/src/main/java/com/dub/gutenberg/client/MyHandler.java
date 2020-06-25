@@ -65,25 +65,20 @@ public class MyHandler extends StompSessionHandlerAdapter {
 			
 			hostsHolder.setExcluded(excludedIps);
 			
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		StateDisplay display = clusterService.getStateDisplay(url);
-		
-		String bookShards = clusterService.getShards(url, "gutenberg-books");
-		String userShards = clusterService.getShards(url, "gutenberg-users");
-		
-		List<ShardDisplay> bookShardsList = displayUtils.shards2DisplayList(bookShards);
-		List<ShardDisplay> userShardsList = displayUtils.shards2DisplayList(userShards);
-		
-		display.getShards().put("gutenberg-books", bookShardsList);
-		display.getShards().put("gutenberg-users", userShardsList);
+			StateDisplay display = clusterService.getStateDisplay(url);
 			
-		try {
+			String bookShards = clusterService.getShards(url, "gutenberg-books");
+			String userShards = clusterService.getShards(url, "gutenberg-users");
+			
+			List<ShardDisplay> bookShardsList = displayUtils.shards2DisplayList(bookShards);
+			List<ShardDisplay> userShardsList = displayUtils.shards2DisplayList(userShards);
+			
+			display.getShards().put("gutenberg-books", bookShardsList);
+			display.getShards().put("gutenberg-users", userShardsList);
+				
 			stompSession.send("/app/notify", objectMapper.writeValueAsString(display) );
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("MyHandler caught exception " + e);
 		}
 	}
 }

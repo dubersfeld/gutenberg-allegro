@@ -7,7 +7,8 @@ server:
 websocketUrl: "ws://localhost:9091/gutenberg-websocket"
 
 # edit to match your own filesystem
-clientUrl: "/home/ubersfeld/Documents/gutenberg-allegro/cluster"
+#clientUrl: "/home/ubersfeld/Documents/gutenberg-allegro/cluster"
+clientUrl: "/home/dominique/Documents/workspace-allegro-publish/cluster"
 
 startServerUrl: "http://localhost:9091/startNode"
 stopServerUrl: "http://localhost:9091/stopNode"

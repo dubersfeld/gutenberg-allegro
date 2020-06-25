@@ -41,9 +41,8 @@
     }
   },
   "mappings": {
-    "_doc": {
-      "properties": {
-      }   
+    "properties": {
+     
     }
   }
 }

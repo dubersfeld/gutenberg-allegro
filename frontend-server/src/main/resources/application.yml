@@ -1,0 +1,33 @@
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /gutenberg
+
+  
+# base server URLs 
+#baseBooksUrl: http://zuul-service:5555/books
+#baseReviewsUrl: http://zuul-service:5555/reviews
+#baseOrdersUrl: http://zuul-service:5555/orders
+#baseUsersUrl: http://zuul-service:5555/users
+
+
+
+# base server URLs 
+#baseBooksUrl: http://book-service:8081
+#baseReviewsUrl: http://review-service:8082
+#baseOrdersUrl: http://order-service:8083
+#baseUsersUrl: http://user-service:8084
+
+#baseBooksUrl: http://localhost:8081
+#baseReviewsUrl: http://localhost:8082
+#baseOrdersUrl: http://localhost:8083
+#baseUsersUrl: http://localhost:8084
+
+#baseBooksUrl: http://localhost:5555/book
+#baseReviewsUrl: http://localhost:5555/review
+#baseOrdersUrl: http://localhost:5555/order
+#baseUsersUrl: http://localhost:5555/user
+
+
+
+

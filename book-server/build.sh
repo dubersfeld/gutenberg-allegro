@@ -1,3 +1,5 @@
 #!/bin/bash
 
-mvn clean package docker:build
+sudo mvn spring-boot:build-image
+
+

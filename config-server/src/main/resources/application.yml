@@ -8,6 +8,15 @@ spring:
     config:
       server:
         native: 
-          searchLocations: file:///tmp/config-repo
+          searchLocations: file:/tmp/config-repo
           
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      #defaultZone: http://eurekaserver:8761/eureka/
+      defaultZone: ${EUREKASERVER_URI}
  

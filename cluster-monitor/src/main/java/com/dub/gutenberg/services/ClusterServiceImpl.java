@@ -75,11 +75,11 @@ public class ClusterServiceImpl implements ClusterService {
 
 	@Override
 	public String startNode(String ip) throws IOException {
-	
+		
 		ProcessBuilder builder = new ProcessBuilder();
 		
 		String launchCommand = this.buildStartCommand(ip);
-		
+			
 		builder.command("bash", "-c", "cd " + clientUrl + " ; pwd ; ls ; " 
 										+ launchCommand); 
 		Process process;
@@ -98,17 +98,18 @@ public class ClusterServiceImpl implements ClusterService {
 
 	@Override
 	public String stopNode(String ip) throws IOException {
-
+	
 		ProcessBuilder builder = new ProcessBuilder();
 		
 		String stopCommand = this.buildStopCommand(ip);
 		
 		builder.command("bash", "-c", "cd " + clientUrl + " ; pwd ; ls ; " 
-										+ stopCommand); 
-	
+				+ stopCommand); 
+			
 		Process process;
 		
 		process = builder.start();
+		//process.
 		OutputStreamWriter output = new OutputStreamWriter(process.getOutputStream());
 			
 		StreamGobbler streamGobbler = 
@@ -125,7 +126,7 @@ public class ClusterServiceImpl implements ClusterService {
 		
 		String container = hostsHolder.getContainers().get(ip);
 		String volume = hostsHolder.getVolumes().get(ip);
-			
+				
 		String command = "./restartNode.sh " 
 				+ container + " " + ip + " " + volume;
 		
@@ -135,10 +136,10 @@ public class ClusterServiceImpl implements ClusterService {
 	private String buildStopCommand(String ip) {
 		
 		String container = hostsHolder.getContainers().get(ip);
-			
+		
 		String command = "./stopContainer.sh " 
 				+ container;
-		
+	
 		return command;		 
 	}
 
@@ -150,31 +151,39 @@ public class ClusterServiceImpl implements ClusterService {
 		
 		String settingsURI = url + "/_cluster/settings";
 			
-		ResponseEntity<String> response 
+		/* probable bug here */
+		try {
+			ResponseEntity<String> response 
 			= restTemplate.getForEntity(settingsURI, String.class);
 						
-		JsonNode root = objectMapper.readTree(response.getBody());
+			JsonNode root = objectMapper.readTree(response.getBody());
 			
-		JsonNode ips = root.path("transient").path("cluster").path("routing")
+			JsonNode ips = root.path("transient").path("cluster").path("routing")
 					.path("allocation").path("exclude").path("_ip");
 			 
-		List<String> excludedIps = new ArrayList<>();
+			List<String> excludedIps = new ArrayList<>();
 			
-		if (!ips.asText().equals("")) {
-			String[] array = ips.asText().split(",");
+			if (!ips.asText().equals("")) {
+				String[] array = ips.asText().split(",");
 			    	  
-			for (int i = 0; i < array.length; i++) {    
-				System.out.println(array[i]);
-				excludedIps.add(array[i]);
-			}  
-		}
+				for (int i = 0; i < array.length; i++) {    
+					System.out.println(array[i]);
+					excludedIps.add(array[i]);
+				}// for  
+			}// if
 			
-		return excludedIps;	
+			return excludedIps;	
+		} catch (IOException e) {
+			System.out.println("Exception caught "
+					+ e);
+			return null;
+		}
 	}
 
 	@Override
 	public String excludeNode(String ip) throws IOException {
 		
+		System.out.println("excludeNode " + ip);
 		this.updateExclusions(ip, Actions.EXCLUDE);
 			
 		return "EXCLUDED";

@@ -2,7 +2,7 @@ server:
   port: 8083
   servlet:
     context-path:
-
+         
 eureka:
   instance:
     prefer-ip-address: true
@@ -10,15 +10,17 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://eurekaserver:8761/eureka/
-     
-     
-# base server URLs
-baseBooksUrl: http://book-service:8081 
+      defaultZone: ${EUREKASERVER_URI}
 
+spring:
+  cloud:
+    config:
+      uri : ${GUTENBERG_CONFIG_URI}
+
+# base server URLs
+baseBooksUrl: http://book-service:8081
+
+elasticsearch-host: ${ELASTICSERVER_HOST}
 elasticsearch-port-one: 9200
 elasticsearch-port-two: 9201
 elasticsearch-scheme: "http"
-    
-
-  

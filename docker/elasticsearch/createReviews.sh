@@ -3,7 +3,7 @@
 ADDRESS=$1
 
 if [ -z $ADDRESS ]; then
-  ADDRESS="localhost:9200"
+  ADDRESS="localhost:40000"
 fi
 
 # Check that Elasticsearch is running
@@ -41,7 +41,7 @@ echo "Indexing data..."
 
 curl -s -XPUT -H 'Content-Type: application/json' "$ADDRESS/gutenberg-reviews/_doc/1" -d'{
   "bookId": "1",
-  "text" : "The most comprehensive source for everything HareFAQ.",
+  "text" : "The most comprehensive source for everything CHEVAL HareFAQ.",
   "rating" : 5.0,
   "userId" : "6",
   "helpfulVotes" : 10,

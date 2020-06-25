@@ -150,7 +150,9 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Order saveOrder(Order order, boolean creation) throws IOException {
 		
+		System.out.println("Fucking saveOrder begin");
 		if (creation) {
+			System.out.println("Fucking saveOrder creation");
 			// create a new Order
 			IndexRequest indexRequest = new IndexRequest(ORDERS);
 			
@@ -158,7 +160,6 @@ public class OrderServiceImpl implements OrderService {
 	   				new TypeReference<Map<String, Object>>() {});
 
 			indexRequest.source(dataMap);
-			indexRequest.type(TYPE);
 			
 			IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
 		        
@@ -166,15 +167,20 @@ public class OrderServiceImpl implements OrderService {
 			
 		    return order;
 		} else {
+			System.out.println("Fucking saveOrder no creation");
 			//check for presence if not creation
 			Optional<Order> doc = orderRepo.findOrderById(order.getId());
 			
+			System.out.println("Fucking saveOrder sator");
 			if (!doc.isPresent()) { 
 				throw new OrderNotFoundException();
 			}
 		
+			System.out.println("Fucking saveOrder arepo");
+			
 			this.updateBoughtWith(order);
 			
+			System.out.println("Fucking saveOrder tenet");
 			// update Order ES document
 			Order updatedOrder = orderRepo.doUpdateOrder(order);
 		
@@ -218,7 +224,7 @@ public class OrderServiceImpl implements OrderService {
 		
 		SearchHits hits = response.getHits();
 	
-		long totalHits = hits.getTotalHits();
+		long totalHits = hits.getTotalHits().value;
 			
 		SearchHit[] searchHits = hits.getHits();
 		if (totalHits == 1) {
@@ -376,6 +382,7 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	private void updateBoughtWith(Order order) throws IOException {
 		
+		System.out.println("Fucking updateBoughtWith begin");
 		/**
 		 * An order may have multiple bookIds
 		 * */
@@ -406,28 +413,50 @@ public class OrderServiceImpl implements OrderService {
 		searchRequest.source(searchSourceBuilder); 
 		searchRequest.indices(ORDERS);
 		
+		System.out.println("Fucking updateBoughtWith sator");
+		
 		SearchResponse response 
 			= client.search(searchRequest, RequestOptions.DEFAULT);
 	
+		System.out.println("Fucking updateBoughtWith arepo");
 		SearchHits hits = response.getHits();
 		SearchHit[] searchHits = hits.getHits();
 				
 		// build a Set of all books bought in the past
 		Set<String> pastBookIds = new HashSet<>();
 		
+		System.out.println("Fucking updateBoughtWith tenet");
 		/** 
 		 * loop for each past order of this user 
 		 * */
 		for (SearchHit hit : searchHits) {
+			System.out.println("Fucking updateBoughtWith for searchHit "
+					+ hit);
 			// exclude present order 
+			System.out.println("Fucking updateBoughtWith enclume "
+					+ (hit.getSourceAsMap() == null));
 			Map<String, Object> map = hit.getSourceAsMap();
+			
+			System.out.println("Fucking updateBoughtWith for map "
+					+ map);
+			
 			Order pastOrder 
 				= objectMapper.convertValue(map, Order.class);
+			pastOrder.setId(hit.getId());
+			System.out.println("Fucking updateBoughtWith for LAPIN "
+					+ (pastOrder == null) + " CHEVAL " + (order == null));
+			System.out.println("Fucking updateBoughtWith for SINGE "
+					+ (pastOrder.getId() == null) + " COCHON " + (order.getId() == null));
+		
 			
 			if (pastOrder.getId().equals(order.getId())) {
+				System.out.println("Fucking updateBoughtWith for continue");//
 				continue;
 			}
 		
+			System.out.println("Fucking updateBoughtWith for forge  "
+					+ (pastOrder == null));
+			
 			List<Item> pastItems = pastOrder.getLineItems();
 			
 			for (Item item : pastItems) {
@@ -436,38 +465,85 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 		
+		System.out.println("Fucking updateBoughtWith Step 1 completed pastBookIds "
+				+ pastBookIds);
+		
+		
 		/** 
 		 * Step 2. Update the boughtWith field in each Book in the pastBookIds set
 		 * 
 		 * */
 	
+		System.out.println("Fucking updateBoughtWith opera pastBookIds " 
+							+ pastBookIds);
 		// iterate on past books
 		for (String pastBookId : pastBookIds) {
 			
+			System.out.println("Fucking updateBoughtWith for2 begin pastBookId "
+					+ pastBookId);
 			// retrieve past book
 			Optional<Book> doc = bookRepo.getBookById(pastBookId);
+			
+			System.out.println("Fucking updateBoughtWith for2 sator");
+			
 			if (!doc.isPresent()) {
 				throw new BookNotFoundException();
 			}
-			Book pastBook = doc.get();
-			List<Item> pastItems = pastBook.getBoughtWith();
 			
+			System.out.println("Fucking updateBoughtWith for2 arepo");
+			
+			Book pastBook = doc.get();
+			
+			System.out.println("Fucking bookId " + (pastBook.getId() == null));
+			List<Item> pastItems = pastBook.getBoughtWith();// may be null
+			
+			System.out.println("Fucking updateBoughtWith for2 DINDE " 
+							+ (pastItems == null) + " pastBookId " + pastBookId);
+			
+			
+			System.out.println("Fucking updateBoughtWith for2 bookIds " + bookIds);
+				
 			for (String bookId : bookIds) {
+				// iterate on books bought in this order
+				System.out.println("Fucking updateBoughtWith for3 bookId " 
+													+ bookId);
+				
+				System.out.println("Fucking updateBoughtWith for3 RAT " 
+						+ (pastBook.getId() == null));
+
 				// if same book nothing to do
 				if (bookId.equals(pastBook.getId())) {
+					System.out.println("Fucking updateBoughtWith for3 continue"); 
 					continue;
 				}
 				// check if bookId already present
 				boolean present = false;
 				
-				// iterate on pastItems
-				for (Item pastItem : pastItems) {
-					if (pastItem.getBookId().equals(bookId)) {
-						present = true;
-						pastItem.setQuantity(pastItem.getQuantity()+1);
+				System.out.println("Fucking updateBoughtWith for3 HERISSON "
+						+ (pastItems == null)); 
+						
+				if (pastItems != null) {
+					// iterate on pastItems
+					for (Item pastItem : pastItems) {
+						System.out.println("Fucking updateBoughtWith for4 begin "
+								+ pastItem);
+						System.out.println("Fucking updateBoughtWith for4 ORANG "
+								+ (pastItem.getBookId() == null));
+								
+						if (pastItem.getBookId().equals(bookId)) {
+							present = true;
+							pastItem.setQuantity(pastItem.getQuantity()+1);
+						}
 					}
-				}
+				} 
+				
+				System.out.println("Fucking updateBoughtWith for3 ZEBRA");
+					
 				if (!present)  {
+					// first check if pastItems exists
+					if (pastItems == null) {
+						pastItems = new ArrayList<>();
+					}
 					// add a new Item
 					pastItems.add(new Item(bookId, 1));
 				}	
@@ -476,7 +552,8 @@ public class OrderServiceImpl implements OrderService {
 			// update past book
 			pastBook.setBoughtWith(pastItems);
 			
-			bookRepo.doUpdateBook(pastBook);		
+			bookRepo.doUpdateBook(pastBook);	
+			System.out.println("Fucking updateBoughtWith return");
 		}
 	}
 }

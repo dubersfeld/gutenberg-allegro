@@ -1,0 +1,54 @@
+server:
+  port: 5555
+  
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKASERVER_URI}
+
+spring:
+  cloud:
+    config:
+      uri : ${GUTENBERG_CONFIG_URI}
+  
+# using Spring Cloud Gateway, not Zuul
+    gateway:
+      routes:
+      - id: books
+        #uri: http://book-service:8081
+        uri: ${BOOKSERVER_URI}
+        predicates:
+        - Path=/books/**
+        filters:
+        - StripPrefix=1 
+      - id: users
+        #uri: http://user-service:8084
+        uri: ${USERSERVER_URI}
+        predicates:
+        - Path=/users/**
+        filters:
+        - StripPrefix=1 
+      - id: orders
+        #uri: http://order-service:8083
+        uri: ${ORDERSERVER_URI}
+        predicates:
+        - Path=/orders/**
+        filters:
+        - StripPrefix=1 
+      - id: reviews
+        #uri: http://review-service:8082
+        uri: ${REVIEWSERVER_URI}
+        predicates:
+        - Path=/reviews/**
+        filters:
+        - StripPrefix=1 
+        
+      httpclient:
+        connect-timeout: 10000
+        response-timeout: 10s
+        
+        

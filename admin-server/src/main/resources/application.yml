@@ -1,0 +1,10 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /admin
+    
+elasticsearch-host: localhost
+elasticsearch-port-one: 9200
+elasticsearch-port-two: 9201
+elasticsearch-scheme: "http"    
+            

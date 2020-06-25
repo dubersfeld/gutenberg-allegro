@@ -50,12 +50,10 @@
     }
   },
   "mappings": {
-    "_doc": {
-      "properties": {
-        "date": { 
-          "type": "date",
-          "format": "yyyy-MM-dd HH:mm"
-        }
+    "properties": {
+      "date": { 
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm"
       }
     }
   }

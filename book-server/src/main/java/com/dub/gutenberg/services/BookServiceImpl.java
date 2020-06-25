@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -64,7 +65,7 @@ private static ObjectMapper objectMapper = new ObjectMapper();
 			
 		SearchHits hits = response.getHits();
 	
-		long totalHits = hits.getTotalHits();
+		long totalHits = hits.getTotalHits().value;
 		
 		SearchHit[] searchHits = hits.getHits();
 
@@ -121,7 +122,7 @@ private static ObjectMapper objectMapper = new ObjectMapper();
 	
 		SearchHits hits = response.getHits();
 
-		long totalHits = hits.getTotalHits();
+		long totalHits = hits.getTotalHits().value;
 
 		SearchHit[] searchHits = hits.getHits();
 			

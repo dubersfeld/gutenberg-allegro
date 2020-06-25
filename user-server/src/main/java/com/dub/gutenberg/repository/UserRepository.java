@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dub.gutenberg.domain.MyUser;
-import com.dub.gutenberg.exceptions.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component

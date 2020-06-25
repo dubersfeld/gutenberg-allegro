@@ -1,0 +1,20 @@
+#!/bin/bash
+
+pwd
+
+for f in 'book' 'config' 'frontend' 'gateway' 'order' 'review' 'user' 'eureka';
+do 
+   echo ${f}
+   cd $f
+   pwd
+   ./build.sh
+   cd ..
+
+   echo $?
+   if [ "$?" -ne 0 ]
+   then 
+      echo "Build failed for $f"
+      exit "$?"
+   fi   
+
+done;

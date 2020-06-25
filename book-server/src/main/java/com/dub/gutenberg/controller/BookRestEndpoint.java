@@ -33,7 +33,7 @@ public class BookRestEndpoint {
 	@RequestMapping(
 			value = "/searchByTitle",
 			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Book>> searchByTitle(@RequestBody BookSearch bookSearch) {
 		List<Book> books = null;
@@ -49,7 +49,7 @@ public class BookRestEndpoint {
 	@RequestMapping(
 			value = "/searchByDescription",
 			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Book>> searchByDescription(@RequestBody BookSearch bookSearch) {
 		List<Book> books = null;

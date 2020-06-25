@@ -1,7 +1,6 @@
 package com.dub.gutenberg.services;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import com.dub.gutenberg.domain.Address;
 import com.dub.gutenberg.domain.MyUser;

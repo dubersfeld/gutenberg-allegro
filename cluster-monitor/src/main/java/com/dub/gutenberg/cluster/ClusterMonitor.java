@@ -52,7 +52,8 @@ public class ClusterMonitor implements Runnable {
 			// check cluster
 			for (String host : hostsHolder.getHosts()) {
 				String stateURI = "http://" + host + ":9200/_cluster/state";
-			
+				System.out.println("ClusterMonitor for "
+						+ host);
 				try {
 					ResponseEntity<State> response 
 					= restTemplate.getForEntity(stateURI, State.class);
@@ -66,6 +67,7 @@ public class ClusterMonitor implements Runnable {
 					hostsHolder.getUp().put(host, false);
 				} catch (HttpServerErrorException e) {
 					hostsHolder.getUp().put(host, false);
+				
 				} catch (Exception e) {
 					hostsHolder.getUp().put(host, false);
 				}

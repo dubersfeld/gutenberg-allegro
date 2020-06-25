@@ -1,5 +1,0 @@
-spring:
-  application:
-    name: zuul-service
-  profiles:
-    active: dev

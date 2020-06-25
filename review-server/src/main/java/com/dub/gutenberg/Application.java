@@ -7,20 +7,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-//import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.dub.gutenberg.config.ElasticsearchConfig;
 
-@SpringBootApplication
+
 @EnableDiscoveryClient
+@RestController
+@SpringBootApplication
 public class Application {
+	
+	@RequestMapping("/enclume") 
+	public String enclume() {
+		return "ENCLUME";
+	}
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-
+	
 	@Autowired
 	private ElasticsearchConfig elasticsearchConfig;
 	
@@ -28,6 +37,7 @@ public class Application {
 	@Bean
 	@DependsOn("elasticsearchConfig")
 	public RestHighLevelClient client() {
+		System.out.println("Fucking client " + elasticsearchConfig.getHost());
 		RestHighLevelClient client = new RestHighLevelClient(
 	                RestClient.builder(
 	                        new HttpHost(
@@ -42,4 +52,5 @@ public class Application {
 		
 		return client;
 	} 
+
 }

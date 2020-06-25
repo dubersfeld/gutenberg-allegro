@@ -22,6 +22,7 @@ import com.dub.client.domain.PaymentOperation;
 import com.dub.client.domain.Primary;
 import com.dub.client.domain.ProfileOperations;
 import com.dub.client.domain.UserPrincipal;
+import com.dub.client.exceptions.DuplicateUserException;
 import com.dub.client.exceptions.UserNotFoundException;
 
 
@@ -248,12 +249,22 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public MyUser saveUser(MyUser user) {
+		
+		System.out.println("Fucking saveUser begin");
 				
 		String usersURI = baseUsersUrl + "/createUser";
 			
-		ResponseEntity<String> response 
-		= restTemplate.postForEntity(usersURI, user, String.class);
-	
-		return null;
+		System.out.println("Fucking saveUser usersURI " + usersURI);
+		
+		try {
+			ResponseEntity<String> response 
+			= restTemplate.postForEntity(usersURI, user, String.class);
+			return user;
+		} catch (HttpClientErrorException e)  {
+			
+			System.out.println("Fucking Exception " + e);
+			throw new DuplicateUserException();
+		}
+		
 	}
 }

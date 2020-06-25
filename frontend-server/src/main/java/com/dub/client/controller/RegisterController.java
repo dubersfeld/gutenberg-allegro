@@ -41,10 +41,14 @@ public class RegisterController {
 			value ="/register",
 			method = RequestMethod.POST)
 	public String createProfile(@ModelAttribute("profile") AccountCreation account, ModelMap model) {
-			
+		
+		System.out.println("Fucking /register begin");
+		
 		account.setHashedPassword(passwordEncoder.encode(account.getPassword()));
 		
 		account.setPassword("");
+		
+		System.out.println("Fucking /register sator");
 		
 		// create new MyUser
 		MyUser user = userUtils.createUser(account);
@@ -55,6 +59,8 @@ public class RegisterController {
 			return "registerSuccess";
 		} catch (DuplicateUserException e) {
 			return "registerFailure";
+		} catch (Exception e) {
+			return "error";
 		}
 		
 	}

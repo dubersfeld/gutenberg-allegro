@@ -5,18 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.support.WriteRequest;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -75,7 +69,7 @@ public class UserServiceImpl implements UserService {
 		= client.search(searchRequest, RequestOptions.DEFAULT);
 		SearchHits hits = response.getHits();
 
-		long totalHits = hits.getTotalHits();
+		long totalHits = hits.getTotalHits().value;
 
 		SearchHit[] searchHits = hits.getHits();
 
@@ -197,20 +191,24 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String createUser(MyUser user) throws IOException {
 	
+		System.out.println("Fucking createUser begin");
+		
 		// First check if username is already present
 		MyUser checkUser = this.findByUsername(user.getUsername());
 	
+		System.out.println("Fucking createUser sator");
 		if (checkUser != null) {
+			System.out.println("Fucking createUser duplicate");
 			throw new DuplicateUserException();// username already present
 		}
 		
+		System.out.println("Fucking createUser arepo");
 		IndexRequest indexRequest = new IndexRequest(INDEX);
 		
 		Map<String, Object> dataMap = objectMapper.convertValue(user, 
    				new TypeReference<Map<String, Object>>() {});
 
 		indexRequest.source(dataMap);
-		indexRequest.type(TYPE);
 		
 		IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
 	        

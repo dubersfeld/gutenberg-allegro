@@ -1,25 +1,22 @@
 #server:
-#  port: 8084
-  
-  
-server:
-  port: 8082
-  servlet:
-    context-path:
+#  port: 8082
+#  servlet:
+#    context-path:
          
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://eurekaserver:8761/eureka/
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: ${EUREKASERVER_URI}
 
 
-baseReviewsUrl: http://eureka-server:8082/reviews  
 
-#elasticsearch-host: "elasticsearch"
-elasticsearch-port-one: 9200
-elasticsearch-port-two: 9201
-elasticsearch-scheme: "http"
+#baseReviewsUrl: http://eureka-server:8082/reviews  
+
+#elasticsearch-host: ${ELASTICSERVER_HOST}
+#elasticsearch-port-one: 9200
+#elasticsearch-port-two: 9201
+#elasticsearch-scheme: "http"

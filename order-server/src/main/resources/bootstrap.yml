@@ -5,8 +5,8 @@ spring:
     active:
       dev
       
- # cloud:
- #   config:
- #     uri: "http://localhost:8888"
+  cloud:
+    config:
+      uri: ${GUTENBERG_CONFIG_URI}
       
    

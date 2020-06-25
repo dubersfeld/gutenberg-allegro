@@ -42,50 +42,77 @@ public class PaymentController {
 			BindingResult result, ModelMap model,
 			HttpServletRequest request) throws InterruptedException {
 		
+		System.out.println("Fucking /authorizePayment begin");
 	
 		if (result.hasErrors()) {
 			return "payments/authorize";
 		} else {
-				
+			
+			System.out.println("Fucking /authorizePayment sator");
+					
 			HttpSession session = request.getSession();
 				
 			String orderId = orderUtils.getActiveOrderId(session);
 				
+			System.out.println("Fucking /authorizePayment arepo");
+			
 			int totalSave = (int)session.getAttribute("total");
 			
+			System.out.println("Fucking /authorizePayment tenet");
+			
 			Order order = orderService.getOrderById(orderId);
+			
+			System.out.println("Fucking /authorizePayment opera");
 			
 			// change state to PRE_AUTHORIZE
 			if (order.getState() == Order.State.CART) {
 				order = orderService.checkoutOrder(order.getId());
 			}
 						
+			System.out.println("Fucking /authorizePayment rotas");
+					
 			// recalculate totals
 			try {
 				
+				
+				System.out.println("Fucking /authorizePayment tiens");
+		
 				// recalculate total
 				order = orderService.getOrderById(orderId);
 					
+				System.out.println("Fucking /authorizePayment fume");
+				
 				if (totalSave == order.getSubtotal()) {
 						
+					System.out.println("Fucking /authorizePayment Assa");
+					
 					Payment payment = new Payment();
 					payment.setAmount(order.getSubtotal()/100.0);
 					payment.setCardNumber(form.getCardNumber());
 					payment.setCardName(form.getName());
 							
 					boolean paymentSuccess = paymentService.authorizePayment(payment);
+						
+					System.out.println("Fucking /authorizePayment c'est du");
+				
 					
 					// transition order state to CART in case of payment failure
 					if (!paymentSuccess) {
+						System.out.println("Fucking /authorizePayment Traore");
 						order = orderService
 								.setCart(order.getId());
 					}
 					
+					System.out.println("Fucking /authorizePayment French");
 					session.setAttribute("paymentSuccess", paymentSuccess);
 					// redirect to OrderController 
+					System.out.println("Fucking /authorizePayment ad patres");
+					
 					return "redirect:/payment";
 				} else  {	
 					orderService.setCart(orderId);
+					System.out.println("Fucking /authorizePayment ad libitum");
+					
 					return "redirect:/getCart";
 				}
 			} catch (RuntimeException e) {	

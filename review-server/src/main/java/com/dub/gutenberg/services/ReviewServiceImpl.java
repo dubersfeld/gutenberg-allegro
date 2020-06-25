@@ -13,6 +13,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -22,8 +23,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.metrics.avg.Avg;
-import org.elasticsearch.search.aggregations.metrics.avg.AvgAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.Avg;
+import org.elasticsearch.search.aggregations.metrics.AvgAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ReviewServiceImpl implements ReviewService{
 
 	public static final String INDEX = "gutenberg-reviews";
-	public static final String TYPE = "_doc";
 	
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -49,16 +49,24 @@ public class ReviewServiceImpl implements ReviewService{
 	@Override
 	public String createReview(Review review) throws IOException {
 		
+		System.out.println("Fucking ReviewService.createReview begin client "
+				+ client + " review " + review.getText());
 		IndexRequest indexRequest = new IndexRequest(INDEX);
+		
+		System.out.println("Fucking ReviewService.createReview check " 
+				+ this.getReviewById("1").getText());
 		
 		Map<String, Object> dataMap = objectMapper.convertValue(review, 
    				new TypeReference<Map<String, Object>>() {});
 
 		indexRequest.source(dataMap);
-		indexRequest.type(TYPE);
+		indexRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
+		//indexRequest.
 		
 		IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
-	        
+	    //client.re    
+		System.out.println("Fucking response " + response.getId());
+		//;.getLocation(routing));
 	    return response.getId();	
 	}
 
@@ -159,7 +167,7 @@ public class ReviewServiceImpl implements ReviewService{
 		Review review = null;
 		
 		GetRequest getRequest = new GetRequest(INDEX);
-		getRequest.type(TYPE);     
+		//getRequest.type(TYPE);     
 	 	getRequest.id(reviewId);
 	 	
 	 	GetResponse getResponse = null;
@@ -177,7 +185,7 @@ public class ReviewServiceImpl implements ReviewService{
 	
 	private Review doUpdate(Review review) throws IOException {
 		// update Review ES document
-		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, review.getId())
+		UpdateRequest updateRequest = new UpdateRequest(INDEX, review.getId())
 		                .fetchSource(true); // Fetch Object after its update
 		    
 		String reviewJson = objectMapper.writeValueAsString(review);

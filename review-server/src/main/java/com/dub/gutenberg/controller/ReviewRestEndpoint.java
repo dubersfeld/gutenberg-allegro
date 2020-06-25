@@ -1,5 +1,6 @@
 package com.dub.gutenberg.controller;
 
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,6 +33,13 @@ public class ReviewRestEndpoint {
 	
 	@Autowired
 	private ReviewService reviewService;
+	
+	/*
+	@RequestMapping("/enclume") 
+	public String enclume() {
+		return "ENCLUME";
+	}
+	*/
 	
 
 	@RequestMapping(
@@ -83,6 +91,8 @@ public class ReviewRestEndpoint {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createReview(@RequestBody Review review) throws URISyntaxException {
 		
+		System.out.println("Fucking /createReview begin "
+				+ review.getText());
 		String newReview;
 		try {
 			newReview = reviewService.createReview(review);

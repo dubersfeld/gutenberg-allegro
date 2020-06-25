@@ -75,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
 		SearchResponse response 
 				= client.search(searchRequest, RequestOptions.DEFAULT);
 		SearchHits hits = response.getHits();
-		long totalHits = hits.getTotalHits();
+		long totalHits = hits.getTotalHits().value;
 	
 		SearchHit[] searchHits = hits.getHits();
 		

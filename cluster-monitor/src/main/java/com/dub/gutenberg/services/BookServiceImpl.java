@@ -63,7 +63,7 @@ private static ObjectMapper objectMapper = new ObjectMapper();
 			
 		SearchHits hits = response.getHits();
 	
-		long totalHits = hits.getTotalHits();
+		long totalHits = hits.getTotalHits().value;
 		
 		SearchHit[] searchHits = hits.getHits();
 

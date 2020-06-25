@@ -10,8 +10,15 @@
 #    register-with-eureka: true
 #    fetch-registry: true
 #    service-url:
-#      defaultZone: http://eurekaserver:8761/eureka/
+#      defaultZone: ${EUREKASERVER_URI}
 
+#spring:
+#  cloud:
+#    config:
+#      uri : ${GUTENBERG_CONFIG_URI}
+
+
+#elasticsearch-host: ${ELASTICSERVER_HOST}
 #elasticsearch-port-one: 9200
 #elasticsearch-port-two: 9201
 #elasticsearch-scheme: "http"

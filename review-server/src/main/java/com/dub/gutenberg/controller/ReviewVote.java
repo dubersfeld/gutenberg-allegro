@@ -1,5 +1,6 @@
 package com.dub.gutenberg.controller;
 
+
 //wrapper
 public class ReviewVote {
 

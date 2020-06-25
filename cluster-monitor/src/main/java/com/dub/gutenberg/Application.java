@@ -22,15 +22,11 @@ import com.dub.gutenberg.services.ClusterService;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 	
-	@Autowired
-	ClusterService clusterService;
-	
 	@Bean
 	public ClusterConfig clusterConfig() {
 		return new ClusterConfig();
 	}
 	
-	//@Autowired
 	@Bean
 	@DependsOn("clusterConfig")
 	public HostsHolder hostsHolder() {

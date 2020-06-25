@@ -23,7 +23,8 @@ public class ClusterController {
 		try {
 			clusterService.startNode(ipForm.getIp());
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("/startNode exception caught "
+					+ e);
 		}
 		return "STARTED";		
 	}
@@ -35,7 +36,9 @@ public class ClusterController {
 		try {
 			clusterService.stopNode(ipForm.getIp());
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("/stopNode exception caught "
+					+ e);	
 		}
 		return "STOPPED";		
 	}
@@ -49,7 +52,9 @@ public class ClusterController {
 		try {
 			clusterService.excludeNode(ipForm.getIp());
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("/excludeNode exception caught "
+					+ e);
+			//e.printStackTrace();
 		}
 		return "EXCLUDED";		
 	}
@@ -62,7 +67,9 @@ public class ClusterController {
 		try {
 			clusterService.includeNode(ipForm.getIp());
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("/includeNode exception caught "
+					+ e);
 		}
 		return "INCLUDED";		
 	}

@@ -11,15 +11,14 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://eurekaserver:8761/eureka/
+      defaultZone: ${EUREKASERVER_URI}
 
 
 # base server URLs 
-baseBooksUrl: http://zuul-service:5555/books
-baseReviewsUrl: http://zuul-service:5555/reviews
-baseOrdersUrl: http://zuul-service:5555/orders
-baseUsersUrl: http://zuul-service:5555/users
-
+baseBooksUrl: ${BOOKSERVER_URI}
+baseReviewsUrl: ${REVIEWSERVER_URI}
+baseOrdersUrl: ${ORDERSERVER_URI}
+baseUsersUrl: ${USERSERVER_URI}
 
 
 # base server URLs 
