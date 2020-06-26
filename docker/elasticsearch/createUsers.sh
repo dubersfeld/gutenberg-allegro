@@ -3,7 +3,7 @@
 ADDRESS=$1
 
 if [ -z $ADDRESS ]; then
-  ADDRESS="localhost:40000"
+  ADDRESS="localhost:9200"
 fi
 
 # Check that Elasticsearch is running
